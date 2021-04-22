@@ -72,9 +72,7 @@ func (c *CommitListBuilder) extractCommitFromLine(line string) *models.Commit {
 
 	unitTimestampInt, _ := strconv.Atoi(unixTimestamp)
 
-	// Any commit with multiple parents is a merge commit.
-	// If there's a space then it means there must be more than one parent hash
-	isMerge := strings.Contains(parentHashes, " ")
+	c.Log.Warn(parentHashes)
 
 	return &models.Commit{
 		Sha:           sha,
@@ -83,7 +81,7 @@ func (c *CommitListBuilder) extractCommitFromLine(line string) *models.Commit {
 		ExtraInfo:     extraInfo,
 		UnixTimestamp: int64(unitTimestampInt),
 		Author:        author,
-		IsMerge:       isMerge,
+		Parents:       strings.Split(parentHashes, " "),
 	}
 }
 

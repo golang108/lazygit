@@ -69,6 +69,10 @@ func (c *GitCommand) Revert(sha string) error {
 	return c.RunCommand("git revert %s", sha)
 }
 
+func (c *GitCommand) RevertMerge(sha string, parentNumber int) error {
+	return c.RunCommand("git revert %s -m %d", sha, parentNumber)
+}
+
 // CherryPickCommits begins an interactive rebase with the given shas being cherry picked onto HEAD
 func (c *GitCommand) CherryPickCommits(commits []*models.Commit) error {
 	todo := ""

@@ -461,11 +461,37 @@ func (gui *Gui) handleCommitRevert() error {
 		return err
 	}
 
-	if err := gui.GitCommand.WithSpan(gui.Tr.Spans.RevertCommit).Revert(gui.State.Commits[gui.State.Panels.Commits.SelectedLineIdx].Sha); err != nil {
-		return gui.surfaceError(err)
+	onDone := func() error {
+		gui.State.Panels.Commits.SelectedLineIdx++
+		return gui.refreshSidePanels(refreshOptions{mode: BLOCK_UI, scope: []RefreshableView{COMMITS, BRANCHES}})
 	}
-	gui.State.Panels.Commits.SelectedLineIdx++
-	return gui.refreshSidePanels(refreshOptions{mode: BLOCK_UI, scope: []RefreshableView{COMMITS, BRANCHES}})
+
+	commit := gui.getSelectedLocalCommit()
+
+	if !commit.IsMerge() {
+		if err := gui.GitCommand.WithSpan(gui.Tr.Spans.RevertCommit).Revert(commit.Sha); err != nil {
+			return gui.surfaceError(err)
+		}
+		return onDone()
+	}
+
+	menuItems := make([]*menuItem, len(commit.Parents))
+	for i, parent := range commit.Parents {
+		gui.Log.Warn("TEST")
+		i := i
+		menuItems[i] = &menuItem{
+			displayString: parent,
+			onPress: func() error {
+				parentNumber := i + 1
+				if err := gui.GitCommand.WithSpan(gui.Tr.Spans.RevertCommit).RevertMerge(commit.Sha, parentNumber); err != nil {
+					return gui.surfaceError(err)
+				}
+				return onDone()
+			},
+		}
+	}
+
+	return gui.createMenu("Select parent commit for merge", menuItems, createMenuOptions{showCancel: true})
 }
 
 func (gui *Gui) handleViewCommitFiles() error {
