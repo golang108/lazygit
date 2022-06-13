@@ -104,7 +104,6 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 type controlledView struct {
 	viewName   string
 	windowName string
-	frame      bool
 }
 
 // controlled views have their size and position determined in arrangement.go.
@@ -112,33 +111,33 @@ type controlledView struct {
 // displaying the view, based on the view's contents.
 func (gui *Gui) controlledViews() []controlledView {
 	return []controlledView{
-		{viewName: "main", windowName: "main", frame: true},
-		{viewName: "secondary", windowName: "secondary", frame: true},
-		{viewName: "staging", windowName: "main", frame: true},
-		{viewName: "secondaryStaging", windowName: "secondary", frame: true},
-		{viewName: "patchBuilding", windowName: "main", frame: true},
-		{viewName: "secondaryPatchBuilding", windowName: "secondary", frame: true},
-		{viewName: "merging", windowName: "main", frame: true},
+		{viewName: "main", windowName: "main"},
+		{viewName: "secondary", windowName: "secondary"},
+		{viewName: "staging", windowName: "main"},
+		{viewName: "secondaryStaging", windowName: "secondary"},
+		{viewName: "patchBuilding", windowName: "main"},
+		{viewName: "secondaryPatchBuilding", windowName: "secondary"},
+		{viewName: "merging", windowName: "main"},
 
-		{viewName: "status", windowName: "status", frame: true},
-		{viewName: "submodules", windowName: "files", frame: true},
-		{viewName: "files", windowName: "files", frame: true},
-		{viewName: "tags", windowName: "branches", frame: true},
-		{viewName: "remotes", windowName: "branches", frame: true},
-		{viewName: "localBranches", windowName: "branches", frame: true},
-		{viewName: "remoteBranches", windowName: "branches", frame: true},
-		{viewName: "commitFiles", windowName: gui.State.Contexts.CommitFiles.GetWindowName(), frame: true},
-		{viewName: "subCommits", windowName: gui.State.Contexts.SubCommits.GetWindowName(), frame: true},
-		{viewName: "reflogCommits", windowName: "commits", frame: true},
-		{viewName: "commits", windowName: "commits", frame: true},
-		{viewName: "stash", windowName: "stash", frame: true},
-		{viewName: "options", windowName: "options", frame: false},
-		{viewName: "searchPrefix", windowName: "searchPrefix", frame: false},
-		{viewName: "search", windowName: "search", frame: false},
-		{viewName: "appStatus", windowName: "appStatus", frame: false},
-		{viewName: "information", windowName: "information", frame: false},
-		{viewName: "extras", windowName: "extras", frame: true},
-		{viewName: "limit", windowName: "limit", frame: true},
+		{viewName: "status", windowName: "status"},
+		{viewName: "submodules", windowName: "files"},
+		{viewName: "files", windowName: "files"},
+		{viewName: "tags", windowName: "branches"},
+		{viewName: "remotes", windowName: "branches"},
+		{viewName: "localBranches", windowName: "branches"},
+		{viewName: "remoteBranches", windowName: "branches"},
+		{viewName: "commitFiles", windowName: gui.State.Contexts.CommitFiles.GetWindowName()},
+		{viewName: "subCommits", windowName: gui.State.Contexts.SubCommits.GetWindowName()},
+		{viewName: "reflogCommits", windowName: "commits"},
+		{viewName: "commits", windowName: "commits"},
+		{viewName: "stash", windowName: "stash"},
+		{viewName: "options", windowName: "options"},
+		{viewName: "searchPrefix", windowName: "searchPrefix"},
+		{viewName: "search", windowName: "search"},
+		{viewName: "appStatus", windowName: "appStatus"},
+		{viewName: "information", windowName: "information"},
+		{viewName: "extras", windowName: "extras"},
+		{viewName: "limit", windowName: "limit"},
 	}
 }
 
@@ -163,9 +162,11 @@ func (gui *Gui) createAllViews() error {
 	}
 
 	gui.Views.Options.FgColor = theme.OptionsColor
+	gui.Views.Options.Frame = false
 
 	gui.Views.SearchPrefix.BgColor = gocui.ColorDefault
 	gui.Views.SearchPrefix.FgColor = gocui.ColorGreen
+	gui.Views.SearchPrefix.Frame = false
 	gui.setViewContent(gui.Views.SearchPrefix, SEARCH_PREFIX)
 
 	gui.Views.Stash.Title = gui.c.Tr.StashTitle
@@ -210,10 +211,12 @@ func (gui *Gui) createAllViews() error {
 	gui.Views.Search.BgColor = gocui.ColorDefault
 	gui.Views.Search.FgColor = gocui.ColorGreen
 	gui.Views.Search.Editable = true
+	gui.Views.Search.Frame = false
 
 	gui.Views.AppStatus.BgColor = gocui.ColorDefault
 	gui.Views.AppStatus.FgColor = gocui.ColorCyan
 	gui.Views.AppStatus.Visible = false
+	gui.Views.AppStatus.Frame = false
 
 	gui.Views.CommitMessage.Visible = false
 	gui.Views.CommitMessage.Title = gui.c.Tr.CommitMessage
@@ -233,6 +236,7 @@ func (gui *Gui) createAllViews() error {
 
 	gui.Views.Information.BgColor = gocui.ColorDefault
 	gui.Views.Information.FgColor = gocui.ColorGreen
+	gui.Views.Information.Frame = false
 
 	gui.Views.Extras.Title = gui.c.Tr.CommandLog
 	gui.Views.Extras.FgColor = theme.GocuiDefaultTextColor

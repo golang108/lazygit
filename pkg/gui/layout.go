@@ -43,15 +43,21 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 		}
 	}
 
-	setViewFromDimensions := func(viewName string, windowName string, frame bool) (*gocui.View, error) {
+	// we assume that the view has already been created.
+	setViewFromDimensions := func(viewName string, windowName string) (*gocui.View, error) {
 		dimensionsObj, ok := viewDimensions[windowName]
+
+		view, err := g.View(viewName)
+		if err != nil {
+			return nil, err
+		}
 
 		if !ok {
 			// view not specified in dimensions object: so create the view and hide it
 			// making the view take up the whole space in the background in case it needs
 			// to render content as soon as it appears, because lazyloaded content (via a pty task)
 			// cares about the size of the view.
-			view, err := g.SetView(viewName, 0, 0, width, height, 0)
+			_, err := g.SetView(viewName, 0, 0, width, height, 0)
 			if view != nil {
 				view.Visible = false
 			}
@@ -59,10 +65,10 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 		}
 
 		frameOffset := 1
-		if frame {
+		if view.Frame {
 			frameOffset = 0
 		}
-		view, err := g.SetView(
+		_, err = g.SetView(
 			viewName,
 			dimensionsObj.X0-frameOffset,
 			dimensionsObj.Y0-frameOffset,
@@ -71,7 +77,6 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 			0,
 		)
 		if view != nil {
-			view.Frame = frame
 			view.Visible = true
 		}
 
@@ -79,7 +84,7 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 	}
 
 	for _, arg := range gui.controlledViews() {
-		_, err := setViewFromDimensions(arg.viewName, arg.windowName, arg.frame)
+		_, err := setViewFromDimensions(arg.viewName, arg.windowName)
 		if err != nil && err.Error() != UNKNOWN_VIEW_ERROR_MSG {
 			return err
 		}
