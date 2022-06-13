@@ -156,17 +156,16 @@ func (gui *Gui) contextForView(viewName string) (types.Context, bool) {
 }
 
 func (gui *Gui) handleNextTab() error {
-	v := getTabbedView(gui)
-	if v == nil {
+	view := getTabbedView(gui)
+	if view == nil {
 		return nil
 	}
 
-	contextKey := v.Context
 	for _, context := range gui.State.Contexts.Flatten() {
-		if string(context.GetKey()) == contextKey {
+		if context.GetViewName() == view.Name() {
 			return gui.onViewTabClick(
 				context.GetWindowName(),
-				utils.ModuloWithWrap(v.TabIndex+1, len(v.Tabs)),
+				utils.ModuloWithWrap(view.TabIndex+1, len(view.Tabs)),
 			)
 		}
 	}
@@ -175,17 +174,16 @@ func (gui *Gui) handleNextTab() error {
 }
 
 func (gui *Gui) handlePrevTab() error {
-	v := getTabbedView(gui)
-	if v == nil {
+	view := getTabbedView(gui)
+	if view == nil {
 		return nil
 	}
 
-	contextKey := v.Context
 	for _, context := range gui.State.Contexts.Flatten() {
-		if string(context.GetKey()) == contextKey {
+		if context.GetViewName() == view.Name() {
 			return gui.onViewTabClick(
 				context.GetWindowName(),
-				utils.ModuloWithWrap(v.TabIndex-1, len(v.Tabs)),
+				utils.ModuloWithWrap(view.TabIndex-1, len(view.Tabs)),
 			)
 		}
 	}

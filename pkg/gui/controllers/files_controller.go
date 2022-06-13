@@ -152,13 +152,13 @@ func (self *FilesController) GetMouseKeybindings(opts types.KeybindingsOpts) []*
 			ViewName:    "main",
 			Key:         gocui.MouseLeft,
 			Handler:     self.onClickMain,
-			FromContext: string(self.context().GetKey()),
+			FocusedView: self.context().GetViewName(),
 		},
 		{
 			ViewName:    "secondary",
 			Key:         gocui.MouseLeft,
 			Handler:     self.onClickSecondary,
-			FromContext: string(self.context().GetKey()),
+			FocusedView: self.context().GetViewName(),
 		},
 	}
 }

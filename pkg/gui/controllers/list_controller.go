@@ -182,22 +182,19 @@ func (self *ListController) GetKeybindings(opts types.KeybindingsOpts) []*types.
 func (self *ListController) GetMouseKeybindings(opts types.KeybindingsOpts) []*gocui.ViewMouseBinding {
 	return []*gocui.ViewMouseBinding{
 		{
-			ViewName:  self.context.GetViewName(),
-			ToContext: string(self.context.GetKey()),
-			Key:       gocui.MouseWheelUp,
-			Handler:   func(gocui.ViewMouseBindingOpts) error { return self.HandleScrollUp() },
+			ViewName: self.context.GetViewName(),
+			Key:      gocui.MouseWheelUp,
+			Handler:  func(gocui.ViewMouseBindingOpts) error { return self.HandleScrollUp() },
 		},
 		{
-			ViewName:  self.context.GetViewName(),
-			ToContext: string(self.context.GetKey()),
-			Key:       gocui.MouseLeft,
-			Handler:   func(opts gocui.ViewMouseBindingOpts) error { return self.HandleClick(opts) },
+			ViewName: self.context.GetViewName(),
+			Key:      gocui.MouseLeft,
+			Handler:  func(opts gocui.ViewMouseBindingOpts) error { return self.HandleClick(opts) },
 		},
 		{
-			ViewName:  self.context.GetViewName(),
-			ToContext: string(self.context.GetKey()),
-			Key:       gocui.MouseWheelDown,
-			Handler:   func(gocui.ViewMouseBindingOpts) error { return self.HandleScrollDown() },
+			ViewName: self.context.GetViewName(),
+			Key:      gocui.MouseWheelDown,
+			Handler:  func(gocui.ViewMouseBindingOpts) error { return self.HandleScrollDown() },
 		},
 	}
 }

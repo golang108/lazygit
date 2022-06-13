@@ -78,7 +78,7 @@ func (self *CommitFilesController) GetMouseKeybindings(opts types.KeybindingsOpt
 			ViewName:    "main",
 			Key:         gocui.MouseLeft,
 			Handler:     self.onClickMain,
-			FromContext: string(self.context().GetKey()),
+			FocusedView: self.context().GetViewName(),
 		},
 	}
 }

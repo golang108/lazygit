@@ -3,8 +3,6 @@ package gui
 import (
 	"github.com/jesseduffield/generics/slices"
 	"github.com/jesseduffield/gocui"
-	"github.com/jesseduffield/lazygit/pkg/gui/context"
-	"github.com/jesseduffield/lazygit/pkg/gui/types"
 	"github.com/jesseduffield/lazygit/pkg/theme"
 )
 
@@ -242,27 +240,4 @@ func (gui *Gui) createAllViews() error {
 	gui.Views.Extras.Wrap = true
 
 	return nil
-}
-
-func initialViewContextMapping(contextTree *context.ContextTree) map[string]types.Context {
-	return map[string]types.Context{
-		"status":         contextTree.Status,
-		"submodules":     contextTree.Submodules,
-		"files":          contextTree.Files,
-		"localBranches":  contextTree.Branches,
-		"remotes":        contextTree.Remotes,
-		"tags":           contextTree.Tags,
-		"remoteBranches": contextTree.RemoteBranches,
-		"commits":        contextTree.LocalCommits,
-		"reflogCommits":  contextTree.ReflogCommits,
-		"commitFiles":    contextTree.CommitFiles,
-		"subCommits":     contextTree.SubCommits,
-		"stash":          contextTree.Stash,
-		"menu":           contextTree.Menu,
-		"confirmation":   contextTree.Confirmation,
-		"commitMessage":  contextTree.CommitMessage,
-		"main":           contextTree.Normal,
-		"secondary":      contextTree.Normal,
-		"extras":         contextTree.CommandLog,
-	}
 }

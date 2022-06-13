@@ -78,13 +78,8 @@ type ViewMouseBinding struct {
 	// the view that is clicked
 	ViewName string
 
-	// the context we are in when the click occurs. Not necessarily the context
-	// of the view we're clicking. If this is blank then it is a global binding.
-	FromContext string
-
-	// the context assigned to the clicked view. If blank, then we don't care
-	// what context is assigned
-	ToContext string
+	// the view that has focus when the click occurs.
+	FocusedView string
 
 	Handler func(ViewMouseBindingOpts) error
 
@@ -1200,18 +1195,18 @@ func (g *Gui) onKey(ev *GocuiEvent) error {
 
 func (g *Gui) execMouseKeybindings(view *View, ev *GocuiEvent, opts ViewMouseBindingOpts) (bool, error) {
 	isMatch := func(binding *ViewMouseBinding) bool {
-		return binding.ViewName == view.Name() && ev.Key == binding.Key && (binding.ToContext == "" || binding.ToContext == view.Context)
+		return binding.ViewName == view.Name() && ev.Key == binding.Key
 	}
 
-	// first pass looks for ones that match both the view and the from context
+	// first pass looks for ones that match the focused view
 	for _, binding := range g.viewMouseBindings {
-		if isMatch(binding) && binding.FromContext != "" && binding.FromContext == g.currentContext {
+		if isMatch(binding) && binding.FocusedView != "" && binding.FocusedView == g.currentView.Name() {
 			return true, binding.Handler(opts)
 		}
 	}
 
 	for _, binding := range g.viewMouseBindings {
-		if isMatch(binding) && binding.FromContext == "" {
+		if isMatch(binding) && binding.FocusedView == "" {
 			return true, binding.Handler(opts)
 		}
 	}
