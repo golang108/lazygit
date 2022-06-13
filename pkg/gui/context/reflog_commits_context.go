@@ -30,7 +30,7 @@ func NewReflogCommitsContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "commits",
+				ViewName:   "reflogCommits",
 				WindowName: "commits",
 				Key:        REFLOG_COMMITS_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

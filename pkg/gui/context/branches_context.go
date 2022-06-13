@@ -30,7 +30,7 @@ func NewBranchesContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "branches",
+				ViewName:   "localBranches",
 				WindowName: "branches",
 				Key:        LOCAL_BRANCHES_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

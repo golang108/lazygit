@@ -10,29 +10,38 @@ import (
 
 type Views struct {
 	Status         *gocui.View
+	Submodules     *gocui.View
 	Files          *gocui.View
 	Branches       *gocui.View
 	Remotes        *gocui.View
 	Tags           *gocui.View
 	RemoteBranches *gocui.View
+	ReflogCommits  *gocui.View
 	Commits        *gocui.View
 	Stash          *gocui.View
-	Main           *gocui.View
-	Secondary      *gocui.View
-	Options        *gocui.View
-	Confirmation   *gocui.View
-	Menu           *gocui.View
-	CommitMessage  *gocui.View
-	CommitFiles    *gocui.View
-	SubCommits     *gocui.View
-	Information    *gocui.View
-	AppStatus      *gocui.View
-	Search         *gocui.View
-	SearchPrefix   *gocui.View
-	Limit          *gocui.View
-	Suggestions    *gocui.View
-	Tooltip        *gocui.View
-	Extras         *gocui.View
+
+	Main                   *gocui.View
+	Secondary              *gocui.View
+	Staging                *gocui.View
+	StagingSecondary       *gocui.View
+	PatchBuilding          *gocui.View
+	PatchBuildingSecondary *gocui.View
+	Merging                *gocui.View
+
+	Options       *gocui.View
+	Confirmation  *gocui.View
+	Menu          *gocui.View
+	CommitMessage *gocui.View
+	CommitFiles   *gocui.View
+	SubCommits    *gocui.View
+	Information   *gocui.View
+	AppStatus     *gocui.View
+	Search        *gocui.View
+	SearchPrefix  *gocui.View
+	Limit         *gocui.View
+	Suggestions   *gocui.View
+	Tooltip       *gocui.View
+	Extras        *gocui.View
 }
 
 type viewNameMapping struct {
@@ -51,18 +60,27 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		// first layer. Ordering within this layer does not matter because there are
 		// no overlapping views
 		{viewPtr: &gui.Views.Status, name: "status"},
+		{viewPtr: &gui.Views.Submodules, name: "submodules"},
 		{viewPtr: &gui.Views.Files, name: "files"},
 		// this is a new view
 		{viewPtr: &gui.Views.Tags, name: "tags"},
 		{viewPtr: &gui.Views.Remotes, name: "remotes"},
-		{viewPtr: &gui.Views.Branches, name: "branches"},
+		{viewPtr: &gui.Views.Branches, name: "localBranches"},
 		{viewPtr: &gui.Views.RemoteBranches, name: "remoteBranches"},
+		{viewPtr: &gui.Views.ReflogCommits, name: "reflogCommits"},
 		{viewPtr: &gui.Views.Commits, name: "commits"},
 		{viewPtr: &gui.Views.Stash, name: "stash"},
 		{viewPtr: &gui.Views.SubCommits, name: "subCommits"},
 		{viewPtr: &gui.Views.CommitFiles, name: "commitFiles"},
-		{viewPtr: &gui.Views.Main, name: "main"},
+
+		{viewPtr: &gui.Views.Staging, name: "staging"},
+		{viewPtr: &gui.Views.StagingSecondary, name: "secondaryStaging"},
+		{viewPtr: &gui.Views.PatchBuilding, name: "patchBuilding"},
+		{viewPtr: &gui.Views.PatchBuildingSecondary, name: "secondaryPatchBuilding"},
+		{viewPtr: &gui.Views.Merging, name: "merging"},
 		{viewPtr: &gui.Views.Secondary, name: "secondary"},
+		{viewPtr: &gui.Views.Main, name: "main"},
+
 		{viewPtr: &gui.Views.Extras, name: "extras"},
 
 		// bottom line
@@ -98,14 +116,22 @@ func (gui *Gui) controlledViews() []controlledView {
 	return []controlledView{
 		{viewName: "main", windowName: "main", frame: true},
 		{viewName: "secondary", windowName: "secondary", frame: true},
+		{viewName: "staging", windowName: "main", frame: true},
+		{viewName: "secondaryStaging", windowName: "secondary", frame: true},
+		{viewName: "patchBuilding", windowName: "main", frame: true},
+		{viewName: "secondaryPatchBuilding", windowName: "secondary", frame: true},
+		{viewName: "merging", windowName: "main", frame: true},
+
 		{viewName: "status", windowName: "status", frame: true},
+		{viewName: "submodules", windowName: "files", frame: true},
 		{viewName: "files", windowName: "files", frame: true},
 		{viewName: "tags", windowName: "branches", frame: true},
 		{viewName: "remotes", windowName: "branches", frame: true},
-		{viewName: "branches", windowName: "branches", frame: true},
+		{viewName: "localBranches", windowName: "branches", frame: true},
 		{viewName: "remoteBranches", windowName: "branches", frame: true},
 		{viewName: "commitFiles", windowName: gui.State.Contexts.CommitFiles.GetWindowName(), frame: true},
 		{viewName: "subCommits", windowName: gui.State.Contexts.SubCommits.GetWindowName(), frame: true},
+		{viewName: "reflogCommits", windowName: "commits", frame: true},
 		{viewName: "commits", windowName: "commits", frame: true},
 		{viewName: "stash", windowName: "stash", frame: true},
 		{viewName: "options", windowName: "options", frame: false},
@@ -116,6 +142,17 @@ func (gui *Gui) controlledViews() []controlledView {
 		{viewName: "extras", windowName: "extras", frame: true},
 		{viewName: "limit", windowName: "limit", frame: true},
 	}
+}
+
+func (gui *Gui) windowForView(viewName string) string {
+	for _, v := range gui.controlledViews() {
+		if v.viewName == viewName {
+			return v.windowName
+		}
+	}
+
+	// defaulting to view name for now
+	return viewName
 }
 
 func (gui *Gui) createAllViews() error {
@@ -158,17 +195,13 @@ func (gui *Gui) createAllViews() error {
 	gui.Views.Files.Title = gui.c.Tr.FilesTitle
 	gui.Views.Files.FgColor = theme.GocuiDefaultTextColor
 
-	gui.Views.Secondary.Title = gui.c.Tr.DiffTitle
-	gui.Views.Secondary.Wrap = true
-	gui.Views.Secondary.FgColor = theme.GocuiDefaultTextColor
-	gui.Views.Secondary.IgnoreCarriageReturns = true
-	gui.Views.Secondary.CanScrollPastBottom = gui.c.UserConfig.Gui.ScrollPastBottom
-
-	gui.Views.Main.Title = gui.c.Tr.DiffTitle
-	gui.Views.Main.Wrap = true
-	gui.Views.Main.FgColor = theme.GocuiDefaultTextColor
-	gui.Views.Main.IgnoreCarriageReturns = true
-	gui.Views.Main.CanScrollPastBottom = gui.c.UserConfig.Gui.ScrollPastBottom
+	for _, view := range []*gocui.View{gui.Views.Main, gui.Views.Secondary, gui.Views.Staging, gui.Views.StagingSecondary, gui.Views.PatchBuilding, gui.Views.PatchBuildingSecondary, gui.Views.Merging} {
+		view.Title = gui.c.Tr.DiffTitle
+		view.Wrap = true
+		view.FgColor = theme.GocuiDefaultTextColor
+		view.IgnoreCarriageReturns = true
+		view.CanScrollPastBottom = gui.c.UserConfig.Gui.ScrollPastBottom
+	}
 
 	gui.Views.Limit.Title = gui.c.Tr.NotEnoughSpace
 	gui.Views.Limit.Wrap = true
@@ -214,12 +247,14 @@ func (gui *Gui) createAllViews() error {
 func initialViewContextMapping(contextTree *context.ContextTree) map[string]types.Context {
 	return map[string]types.Context{
 		"status":         contextTree.Status,
+		"submodules":     contextTree.Submodules,
 		"files":          contextTree.Files,
-		"branches":       contextTree.Branches,
+		"localBranches":  contextTree.Branches,
 		"remotes":        contextTree.Remotes,
 		"tags":           contextTree.Tags,
 		"remoteBranches": contextTree.RemoteBranches,
 		"commits":        contextTree.LocalCommits,
+		"reflogCommits":  contextTree.ReflogCommits,
 		"commitFiles":    contextTree.CommitFiles,
 		"subCommits":     contextTree.SubCommits,
 		"stash":          contextTree.Stash,

@@ -1,8 +1,6 @@
 package context
 
 import (
-	"sync"
-
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
 )
 
@@ -84,63 +82,36 @@ type ContextTree struct {
 	CommandLog     types.Context
 }
 
+// the order of this decides which context is initially at the top of its window
 func (self *ContextTree) Flatten() []types.Context {
+	// TODO: add context for staging secondary, etc
 	return []types.Context{
 		self.Global,
 		self.Status,
-		self.Files,
 		self.Submodules,
-		self.Branches,
+		self.Files,
+		self.SubCommits,
 		self.Remotes,
 		self.RemoteBranches,
 		self.Tags,
-		self.LocalCommits,
+		self.Branches,
 		self.CommitFiles,
 		self.ReflogCommits,
+		self.LocalCommits,
 		self.Stash,
 		self.Menu,
 		self.Confirmation,
 		self.CommitMessage,
-		self.Normal,
 		self.Staging,
 		self.Merging,
 		self.PatchBuilding,
-		self.SubCommits,
+		self.Normal,
 		self.Suggestions,
 		self.CommandLog,
 	}
 }
 
-type ViewContextMap struct {
-	content map[string]types.Context
-	sync.RWMutex
-}
-
-func NewViewContextMap() *ViewContextMap {
-	return &ViewContextMap{content: map[string]types.Context{}}
-}
-
-func (self *ViewContextMap) Get(viewName string) types.Context {
-	self.RLock()
-	defer self.RUnlock()
-
-	return self.content[viewName]
-}
-
-func (self *ViewContextMap) Set(viewName string, context types.Context) {
-	self.Lock()
-	defer self.Unlock()
-	self.content[viewName] = context
-}
-
-func (self *ViewContextMap) Entries() map[string]types.Context {
-	self.Lock()
-	defer self.Unlock()
-	return self.content
-}
-
-type TabContext struct {
+type TabView struct {
 	Tab      string
-	Context  types.Context
 	ViewName string
 }

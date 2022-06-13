@@ -61,7 +61,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Staging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "main",
+				ViewName:   "staging",
 				WindowName: "main",
 				Key:        context.MAIN_STAGING_CONTEXT_KEY,
 				Focusable:  true,
@@ -71,10 +71,10 @@ func (gui *Gui) contextTree() *context.ContextTree {
 					forceSecondaryFocused := false
 					selectedLineIdx := -1
 					if len(opts) > 0 && opts[0].ClickedViewName != "" {
-						if opts[0].ClickedViewName == "main" || opts[0].ClickedViewName == "secondary" {
+						if opts[0].ClickedViewName == "staging" || opts[0].ClickedViewName == "secondaryStaging" {
 							selectedLineIdx = opts[0].ClickedViewLineIdx
 						}
-						if opts[0].ClickedViewName == "secondary" {
+						if opts[0].ClickedViewName == "secondaryStaging" {
 							forceSecondaryFocused = true
 						}
 					}
@@ -85,7 +85,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		PatchBuilding: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "main",
+				ViewName:   "patchBuilding",
 				WindowName: "main",
 				Key:        context.MAIN_PATCH_BUILDING_CONTEXT_KEY,
 				Focusable:  true,
@@ -93,7 +93,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 			context.ContextCallbackOpts{
 				OnFocus: func(opts ...types.OnFocusOpts) error {
 					selectedLineIdx := -1
-					if len(opts) > 0 && (opts[0].ClickedViewName == "main" || opts[0].ClickedViewName == "secondary") {
+					if len(opts) > 0 && (opts[0].ClickedViewName == "patchBuilding" || opts[0].ClickedViewName == "secondaryPatchBuilding") {
 						selectedLineIdx = opts[0].ClickedViewLineIdx
 					}
 
@@ -104,7 +104,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Merging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:            types.MAIN_CONTEXT,
-				ViewName:        "main",
+				ViewName:        "merging",
 				WindowName:      "main",
 				Key:             context.MAIN_MERGING_CONTEXT_KEY,
 				OnGetOptionsMap: gui.getMergingOptions,

@@ -126,10 +126,6 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 			continue
 		}
 
-		if !gui.isContextVisible(listContext) {
-			continue
-		}
-
 		listContext.FocusLine()
 
 		view.SelBgColor = theme.GocuiSelectedLineBgColor
@@ -191,13 +187,13 @@ func (gui *Gui) onInitialViewsCreation() error {
 	// add tabs to views
 	for _, view := range gui.g.Views() {
 		// if the view is in our mapping, we'll set the tabs and the tab index
-		for _, values := range gui.initialViewTabContextMap2() {
-			index := slices.IndexFunc(values, func(tabContext context.TabContext) bool {
+		for _, values := range gui.viewTabMap() {
+			index := slices.IndexFunc(values, func(tabContext context.TabView) bool {
 				return tabContext.ViewName == view.Name()
 			})
 
 			if index != -1 {
-				view.Tabs = slices.Map(values, func(tabContext context.TabContext) string {
+				view.Tabs = slices.Map(values, func(tabContext context.TabView) string {
 					return tabContext.Tab
 				})
 				view.TabIndex = index

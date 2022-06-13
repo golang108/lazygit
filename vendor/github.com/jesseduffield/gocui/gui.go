@@ -470,7 +470,7 @@ func (g *Gui) CurrentView() *View {
 // It behaves differently on different platforms. Somewhere it doesn't register Alt key press,
 // on others it might report Ctrl as Alt. It's not consistent and therefore it's not recommended
 // to use with mouse keys.
-func (g *Gui) SetKeybinding(viewname string, contexts []string, key interface{}, mod Modifier, handler func(*Gui, *View) error) error {
+func (g *Gui) SetKeybinding(viewname string, key interface{}, mod Modifier, handler func(*Gui, *View) error) error {
 	var kb *keybinding
 
 	k, ch, err := getKey(key)
@@ -482,7 +482,7 @@ func (g *Gui) SetKeybinding(viewname string, contexts []string, key interface{},
 		return ErrBlacklisted
 	}
 
-	kb = newKeybinding(viewname, contexts, k, ch, mod, handler)
+	kb = newKeybinding(viewname, k, ch, mod, handler)
 	g.keybindings = append(g.keybindings, kb)
 	return nil
 }
@@ -1483,14 +1483,5 @@ func (g *Gui) matchView(v *View, kb *keybinding) bool {
 	if kb.viewName != v.name {
 		return false
 	}
-	// if the keybinding doesn't specify contexts, it applies for all contexts
-	if len(kb.contexts) == 0 {
-		return true
-	}
-	for _, context := range kb.contexts {
-		if context == v.Context {
-			return true
-		}
-	}
-	return false
+	return true
 }

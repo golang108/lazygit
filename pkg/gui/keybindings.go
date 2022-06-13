@@ -7,7 +7,6 @@ import (
 
 	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/constants"
-	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/gui/controllers/helpers"
 	"github.com/jesseduffield/lazygit/pkg/gui/keybindings"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
@@ -173,7 +172,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		},
 		{
 			ViewName:    "status",
-			Contexts:    []string{string(context.STATUS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.Edit),
 			Handler:     self.handleEditConfig,
 			Description: self.c.Tr.EditConfig,
@@ -192,70 +190,60 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		},
 		{
 			ViewName:    "status",
-			Contexts:    []string{string(context.STATUS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
 			Handler:     self.handleOpenConfig,
 			Description: self.c.Tr.OpenConfig,
 		},
 		{
 			ViewName:    "status",
-			Contexts:    []string{string(context.STATUS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Status.CheckForUpdate),
 			Handler:     self.handleCheckForUpdate,
 			Description: self.c.Tr.LcCheckForUpdate,
 		},
 		{
 			ViewName:    "status",
-			Contexts:    []string{string(context.STATUS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Status.RecentRepos),
 			Handler:     self.handleCreateRecentReposMenu,
 			Description: self.c.Tr.SwitchRepo,
 		},
 		{
 			ViewName:    "status",
-			Contexts:    []string{string(context.STATUS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Status.AllBranchesLogGraph),
 			Handler:     self.handleShowAllBranchLogs,
 			Description: self.c.Tr.LcAllBranchesLogGraph,
 		},
 		{
 			ViewName:    "files",
-			Contexts:    []string{string(context.FILES_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyFileNameToClipboard,
 		},
 		{
-			ViewName:    "branches",
-			Contexts:    []string{string(context.LOCAL_BRANCHES_CONTEXT_KEY)},
+			ViewName:    "localBranches",
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyBranchNameToClipboard,
 		},
 		{
 			ViewName:    "commits",
-			Contexts:    []string{string(context.LOCAL_COMMITS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyCommitShaToClipboard,
 		},
 		{
 			ViewName:    "commits",
-			Contexts:    []string{string(context.LOCAL_COMMITS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Commits.ResetCherryPick),
 			Handler:     self.helpers.CherryPick.Reset,
 			Description: self.c.Tr.LcResetCherryPick,
 		},
 		{
-			ViewName:    "commits",
-			Contexts:    []string{string(context.REFLOG_COMMITS_CONTEXT_KEY)},
+			ViewName:    "reflogCommits",
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyCommitShaToClipboard,
 		},
 		{
 			ViewName:    "subCommits",
-			Contexts:    []string{string(context.SUB_COMMITS_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyCommitShaToClipboard,
@@ -268,7 +256,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		},
 		{
 			ViewName:    "commitFiles",
-			Contexts:    []string{string(context.COMMIT_FILES_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopyCommitFileNameToClipboard,
@@ -315,7 +302,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		},
 		{
 			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_NORMAL_CONTEXT_KEY)},
 			Key:         gocui.MouseWheelDown,
 			Handler:     self.scrollDownMain,
 			Description: self.c.Tr.ScrollDown,
@@ -323,156 +309,147 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		},
 		{
 			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_NORMAL_CONTEXT_KEY)},
 			Key:         gocui.MouseWheelUp,
 			Handler:     self.scrollUpMain,
 			Description: self.c.Tr.ScrollUp,
 			Alternative: "fn+down",
 		},
 		{
-			ViewName: "secondary",
-			Contexts: []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
+			// TODO: create view
+			ViewName: "secondaryStaging",
 			Key:      gocui.MouseLeft,
 			Modifier: gocui.ModNone,
 			Handler:  self.handleTogglePanelClick,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.Return),
 			Handler:     self.handleStagingEscape,
 			Description: self.c.Tr.ReturnToFilesPanel,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.Select),
 			Handler:     self.handleToggleStagedSelection,
 			Description: self.c.Tr.StageSelection,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.Remove),
 			Handler:     self.handleResetSelection,
 			Description: self.c.Tr.ResetSelection,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.TogglePanel),
 			Handler:     self.handleTogglePanel,
 			Description: self.c.Tr.TogglePanel,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY)},
+			ViewName:    "patchBuilding",
 			Key:         opts.GetKey(opts.Config.Universal.Return),
 			Handler:     self.handleEscapePatchBuildingPanel,
 			Description: self.c.Tr.ExitLineByLineMode,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
+			Key:         opts.GetKey(opts.Config.Universal.Edit),
+			Handler:     self.handleLineByLineEdit,
+			Description: self.c.Tr.LcEditFile,
+		},
+		{
+			ViewName:    "staging",
+			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
+			Handler:     self.HandleOpenFile,
+			Description: self.c.Tr.LcOpenFile,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.Select),
+			Handler:     self.handleToggleSelectionForPatch,
+			Description: self.c.Tr.ToggleSelectionForPatch,
+		},
+		{
+			ViewName:    "staging",
+			Key:         opts.GetKey(opts.Config.Main.EditSelectHunk),
+			Handler:     self.handleEditHunk,
+			Description: self.c.Tr.EditHunk,
+		},
+		{
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
 			Handler:     self.handleOpenFileAtLine,
 			Description: self.c.Tr.LcOpenFile,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.PrevItem),
 			Handler:     self.handleSelectPrevLine,
 			Description: self.c.Tr.PrevLine,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.NextItem),
 			Handler:     self.handleSelectNextLine,
 			Description: self.c.Tr.NextLine,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      opts.GetKey(opts.Config.Universal.PrevItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectPrevLine,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      opts.GetKey(opts.Config.Universal.NextItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectNextLine,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseWheelUp,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollUpMain,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseWheelDown,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollDownMain,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.PrevBlock),
 			Handler:     self.handleSelectPrevHunk,
 			Description: self.c.Tr.PrevHunk,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      opts.GetKey(opts.Config.Universal.PrevBlockAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectPrevHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.NextBlock),
 			Handler:     self.handleSelectNextHunk,
 			Description: self.c.Tr.NextHunk,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      opts.GetKey(opts.Config.Universal.NextBlockAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectNextHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Modifier:    gocui.ModNone,
 			Handler:     self.copySelectedToClipboard,
 			Description: self.c.Tr.LcCopySelectedTexToClipboard,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
-			Key:         opts.GetKey(opts.Config.Universal.Edit),
-			Handler:     self.handleLineByLineEdit,
-			Description: self.c.Tr.LcEditFile,
-		},
-		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
-			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
-			Handler:     self.HandleOpenFile,
-			Description: self.c.Tr.LcOpenFile,
-		},
-		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.NextPage),
 			Modifier:    gocui.ModNone,
 			Handler:     self.handleLineByLineNextPage,
@@ -480,8 +457,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.PrevPage),
 			Modifier:    gocui.ModNone,
 			Handler:     self.handleLineByLinePrevPage,
@@ -489,8 +465,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.GotoTop),
 			Modifier:    gocui.ModNone,
 			Handler:     self.handleLineByLineGotoTop,
@@ -498,8 +473,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.GotoBottom),
 			Modifier:    gocui.ModNone,
 			Handler:     self.handleLineByLineGotoBottom,
@@ -507,194 +481,336 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.StartSearch),
-			Handler:     func() error { return self.handleOpenSearch("main") },
+			Handler:     func() error { return self.handleOpenSearch("staging") },
 			Description: self.c.Tr.LcStartSearch,
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY)},
-			Key:         opts.GetKey(opts.Config.Universal.Select),
-			Handler:     self.handleToggleSelectionForPatch,
-			Description: self.c.Tr.ToggleSelectionForPatch,
-		},
-		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Main.ToggleDragSelect),
 			Handler:     self.handleToggleSelectRange,
 			Description: self.c.Tr.ToggleDragSelect,
 		},
-		// Alias 'V' -> 'v'
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Main.ToggleDragSelectAlt),
 			Handler:     self.handleToggleSelectRange,
 			Description: self.c.Tr.ToggleDragSelect,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Main.ToggleSelectHunk),
 			Handler:     self.handleToggleSelectHunk,
 			Description: self.c.Tr.ToggleSelectHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_STAGING_CONTEXT_KEY)},
-			Key:         opts.GetKey(opts.Config.Main.EditSelectHunk),
-			Handler:     self.handleEditHunk,
-			Description: self.c.Tr.EditHunk,
-		},
-		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseLeft,
 			Modifier: gocui.ModNone,
 			Handler:  self.handleLBLMouseDown,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseLeft,
 			Modifier: gocui.ModMotion,
 			Handler:  self.handleMouseDrag,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseWheelUp,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollUpMain,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY)},
+			ViewName: "staging",
 			Key:      gocui.MouseWheelDown,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollDownMain,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY), string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
+			Handler:     self.handleOpenFileAtLine,
+			Description: self.c.Tr.LcOpenFile,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.PrevItem),
+			Handler:     self.handleSelectPrevLine,
+			Description: self.c.Tr.PrevLine,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.NextItem),
+			Handler:     self.handleSelectNextLine,
+			Description: self.c.Tr.NextLine,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      opts.GetKey(opts.Config.Universal.PrevItemAlt),
+			Modifier: gocui.ModNone,
+			Handler:  self.handleSelectPrevLine,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      opts.GetKey(opts.Config.Universal.NextItemAlt),
+			Modifier: gocui.ModNone,
+			Handler:  self.handleSelectNextLine,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseWheelUp,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollUpMain,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseWheelDown,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollDownMain,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.PrevBlock),
+			Handler:     self.handleSelectPrevHunk,
+			Description: self.c.Tr.PrevHunk,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      opts.GetKey(opts.Config.Universal.PrevBlockAlt),
+			Modifier: gocui.ModNone,
+			Handler:  self.handleSelectPrevHunk,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.NextBlock),
+			Handler:     self.handleSelectNextHunk,
+			Description: self.c.Tr.NextHunk,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      opts.GetKey(opts.Config.Universal.NextBlockAlt),
+			Modifier: gocui.ModNone,
+			Handler:  self.handleSelectNextHunk,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
+			Modifier:    gocui.ModNone,
+			Handler:     self.copySelectedToClipboard,
+			Description: self.c.Tr.LcCopySelectedTexToClipboard,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.NextPage),
+			Modifier:    gocui.ModNone,
+			Handler:     self.handleLineByLineNextPage,
+			Description: self.c.Tr.LcNextPage,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.PrevPage),
+			Modifier:    gocui.ModNone,
+			Handler:     self.handleLineByLinePrevPage,
+			Description: self.c.Tr.LcPrevPage,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.GotoTop),
+			Modifier:    gocui.ModNone,
+			Handler:     self.handleLineByLineGotoTop,
+			Description: self.c.Tr.LcGotoTop,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.GotoBottom),
+			Modifier:    gocui.ModNone,
+			Handler:     self.handleLineByLineGotoBottom,
+			Description: self.c.Tr.LcGotoBottom,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.StartSearch),
+			Handler:     func() error { return self.handleOpenSearch("patchBuilding") },
+			Description: self.c.Tr.LcStartSearch,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Main.ToggleDragSelect),
+			Handler:     self.handleToggleSelectRange,
+			Description: self.c.Tr.ToggleDragSelect,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Main.ToggleDragSelectAlt),
+			Handler:     self.handleToggleSelectRange,
+			Description: self.c.Tr.ToggleDragSelect,
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Main.ToggleSelectHunk),
+			Handler:     self.handleToggleSelectHunk,
+			Description: self.c.Tr.ToggleSelectHunk,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseLeft,
+			Modifier: gocui.ModNone,
+			Handler:  self.handleLBLMouseDown,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseLeft,
+			Modifier: gocui.ModMotion,
+			Handler:  self.handleMouseDrag,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseWheelUp,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollUpMain,
+		},
+		{
+			ViewName: "patchBuilding",
+			Key:      gocui.MouseWheelDown,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollDownMain,
+		},
+		{
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.ScrollLeft),
 			Handler:     self.scrollLeftMain,
 			Description: self.c.Tr.LcScrollLeft,
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_PATCH_BUILDING_CONTEXT_KEY), string(context.MAIN_STAGING_CONTEXT_KEY), string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "staging",
 			Key:         opts.GetKey(opts.Config.Universal.ScrollRight),
 			Handler:     self.scrollRightMain,
 			Description: self.c.Tr.LcScrollRight,
 			Tag:         "navigation",
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.ScrollLeft),
+			Handler:     self.scrollLeftMain,
+			Description: self.c.Tr.LcScrollLeft,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "patchBuilding",
+			Key:         opts.GetKey(opts.Config.Universal.ScrollRight),
+			Handler:     self.scrollRightMain,
+			Description: self.c.Tr.LcScrollRight,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "merging",
+			Key:         opts.GetKey(opts.Config.Universal.ScrollLeft),
+			Handler:     self.scrollLeftMain,
+			Description: self.c.Tr.LcScrollLeft,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "merging",
+			Key:         opts.GetKey(opts.Config.Universal.ScrollRight),
+			Handler:     self.scrollRightMain,
+			Description: self.c.Tr.LcScrollRight,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.Return),
 			Handler:     self.handleEscapeMerge,
 			Description: self.c.Tr.ReturnToFilesPanel,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Files.OpenMergeTool),
 			Handler:     self.helpers.WorkingTree.OpenMergeTool,
 			Description: self.c.Tr.LcOpenMergeTool,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.Select),
 			Handler:     self.handlePickHunk,
 			Description: self.c.Tr.PickHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Main.PickBothHunks),
 			Handler:     self.handlePickAllHunks,
 			Description: self.c.Tr.PickAllHunks,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.PrevBlock),
 			Handler:     self.handleSelectPrevConflict,
 			Description: self.c.Tr.PrevConflict,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.NextBlock),
 			Handler:     self.handleSelectNextConflict,
 			Description: self.c.Tr.NextConflict,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.PrevItem),
 			Handler:     self.handleSelectPrevConflictHunk,
 			Description: self.c.Tr.SelectPrevHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.NextItem),
 			Handler:     self.handleSelectNextConflictHunk,
 			Description: self.c.Tr.SelectNextHunk,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName: "merging",
 			Key:      opts.GetKey(opts.Config.Universal.PrevBlockAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectPrevConflict,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName: "merging",
 			Key:      opts.GetKey(opts.Config.Universal.NextBlockAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectNextConflict,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName: "merging",
 			Key:      opts.GetKey(opts.Config.Universal.PrevItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectPrevConflictHunk,
 		},
 		{
-			ViewName: "main",
-			Contexts: []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName: "merging",
 			Key:      opts.GetKey(opts.Config.Universal.NextItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.handleSelectNextConflictHunk,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.Edit),
 			Handler:     self.handleMergeConflictEditFileAtLine,
 			Description: self.c.Tr.LcEditFile,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
 			Handler:     self.handleMergeConflictOpenFileAtLine,
 			Description: self.c.Tr.LcOpenFile,
 		},
 		{
-			ViewName:    "main",
-			Contexts:    []string{string(context.MAIN_MERGING_CONTEXT_KEY)},
+			ViewName:    "merging",
 			Key:         opts.GetKey(opts.Config.Universal.Undo),
 			Handler:     self.handleMergeConflictUndo,
 			Description: self.c.Tr.LcUndo,
@@ -742,15 +858,13 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Handler:  self.scrollDownConfirmationPanel,
 		},
 		{
-			ViewName:    "files",
-			Contexts:    []string{string(context.SUBMODULES_CONTEXT_KEY)},
+			ViewName:    "submodules",
 			Key:         opts.GetKey(opts.Config.Universal.CopyToClipboard),
 			Handler:     self.handleCopySelectedSideContextItemToClipboard,
 			Description: self.c.Tr.LcCopySubmoduleNameToClipboard,
 		},
 		{
 			ViewName:    "files",
-			Contexts:    []string{string(context.FILES_CONTEXT_KEY)},
 			Key:         opts.GetKey(opts.Config.Universal.ToggleWhitespaceInDiffView),
 			Handler:     self.toggleWhitespaceInDiffView,
 			Description: self.c.Tr.ToggleWhitespaceInDiffView,
@@ -787,7 +901,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		{
 			ViewName: "extras",
 			Tag:      "navigation",
-			Contexts: []string{string(context.COMMAND_LOG_CONTEXT_KEY)},
 			Key:      opts.GetKey(opts.Config.Universal.PrevItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollUpExtra,
@@ -795,7 +908,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		{
 			ViewName: "extras",
 			Tag:      "navigation",
-			Contexts: []string{string(context.COMMAND_LOG_CONTEXT_KEY)},
 			Key:      opts.GetKey(opts.Config.Universal.PrevItem),
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollUpExtra,
@@ -803,7 +915,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		{
 			ViewName: "extras",
 			Tag:      "navigation",
-			Contexts: []string{string(context.COMMAND_LOG_CONTEXT_KEY)},
 			Key:      opts.GetKey(opts.Config.Universal.NextItem),
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollDownExtra,
@@ -811,7 +922,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		{
 			ViewName: "extras",
 			Tag:      "navigation",
-			Contexts: []string{string(context.COMMAND_LOG_CONTEXT_KEY)},
 			Key:      opts.GetKey(opts.Config.Universal.NextItemAlt),
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollDownExtra,
@@ -828,12 +938,8 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 	mouseKeybindings := []*gocui.ViewMouseBinding{}
 	for _, c := range self.State.Contexts.Flatten() {
 		viewName := c.GetViewName()
-		contextKey := c.GetKey()
 		for _, binding := range c.GetKeybindings(opts) {
 			// TODO: move all mouse keybindings into the mouse keybindings approach below
-			if !gocui.IsMouseKey(binding.Key) && contextKey != context.GLOBAL_CONTEXT_KEY {
-				binding.Contexts = []string{string(contextKey)}
-			}
 			binding.ViewName = viewName
 			bindings = append(bindings, binding)
 		}
@@ -841,7 +947,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		mouseKeybindings = append(mouseKeybindings, c.GetMouseKeybindings(opts)...)
 	}
 
-	for _, viewName := range []string{"status", "remotes", "branches", "remoteBranches", "files", "commits", "commitFiles", "subCommits", "stash"} {
+	for _, viewName := range []string{"status", "remotes", "tags", "localBranches", "remoteBranches", "files", "submodules", "reflogCommits", "commits", "commitFiles", "subCommits", "stash"} {
 		bindings = append(bindings, []*types.Binding{
 			{ViewName: viewName, Key: opts.GetKey(opts.Config.Universal.PrevBlock), Modifier: gocui.ModNone, Handler: self.previousSideWindow},
 			{ViewName: viewName, Key: opts.GetKey(opts.Config.Universal.NextBlock), Modifier: gocui.ModNone, Handler: self.nextSideWindow},
@@ -853,7 +959,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 	}
 
 	// Appends keybindings to jump to a particular sideView using numbers
-	windows := []string{"status", "files", "branches", "commits", "stash"}
+	windows := []string{"status", "files", "localBranches", "commits", "stash"}
 
 	if len(config.Universal.JumpToBlock) != len(windows) {
 		log.Fatal("Jump to block keybindings cannot be set. Exactly 5 keybindings must be supplied.")
@@ -912,12 +1018,14 @@ func (gui *Gui) resetKeybindings() error {
 		}
 	}
 
-	for viewName := range gui.initialViewTabContextMap2() {
-		viewName := viewName
-		tabClickCallback := func(tabIndex int) error { return gui.onViewTabClick(viewName, tabIndex) }
+	for _, values := range gui.viewTabMap() {
+		for _, value := range values {
+			viewName := value.ViewName
+			tabClickCallback := func(tabIndex int) error { return gui.onViewTabClick(gui.windowForView(viewName), tabIndex) }
 
-		if err := gui.g.SetTabClickBinding(viewName, tabClickCallback); err != nil {
-			return err
+			if err := gui.g.SetTabClickBinding(viewName, tabClickCallback); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -944,7 +1052,7 @@ func (gui *Gui) SetKeybinding(binding *types.Binding) error {
 		}
 	}
 
-	return gui.g.SetKeybinding(binding.ViewName, binding.Contexts, binding.Key, binding.Modifier, gui.wrappedHandler(handler))
+	return gui.g.SetKeybinding(binding.ViewName, binding.Key, binding.Modifier, gui.wrappedHandler(handler))
 }
 
 // warning: mutates the binding

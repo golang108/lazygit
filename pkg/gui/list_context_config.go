@@ -95,7 +95,7 @@ func (gui *Gui) withDiffModeCheck(f func() error) func() error {
 func (gui *Gui) tagsListContext() *context.TagsContext {
 	return context.NewTagsContext(
 		func() []*models.Tag { return gui.State.Model.Tags },
-		gui.Views.Branches,
+		gui.Views.Tags,
 		func(startIdx int, length int) [][]string {
 			return presentation.GetTagListDisplayStrings(gui.State.Model.Tags, gui.State.Modes.Diffing.Ref)
 		},
@@ -194,7 +194,7 @@ func (gui *Gui) shouldShowGraph() bool {
 func (gui *Gui) reflogCommitsListContext() *context.ReflogCommitsContext {
 	return context.NewReflogCommitsContext(
 		func() []*models.Commit { return gui.State.Model.FilteredReflogCommits },
-		gui.Views.Commits,
+		gui.Views.ReflogCommits,
 		func(startIdx int, length int) [][]string {
 			return presentation.GetReflogCommitListDisplayStrings(
 				gui.State.Model.FilteredReflogCommits,
@@ -250,7 +250,7 @@ func (gui *Gui) commitFilesListContext() *context.CommitFilesContext {
 func (gui *Gui) submodulesListContext() *context.SubmodulesContext {
 	return context.NewSubmodulesContext(
 		func() []*models.SubmoduleConfig { return gui.State.Model.Submodules },
-		gui.Views.Files,
+		gui.Views.Submodules,
 		func(startIdx int, length int) [][]string {
 			return presentation.GetSubmoduleListDisplayStrings(gui.State.Model.Submodules)
 		},

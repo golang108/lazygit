@@ -30,7 +30,7 @@ func NewSubmodulesContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "files",
+				ViewName:   "submodules",
 				WindowName: "files",
 				Key:        SUBMODULES_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

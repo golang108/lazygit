@@ -2,14 +2,12 @@ package gui
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 	"strings"
 
 	"github.com/jesseduffield/generics/maps"
 	"github.com/jesseduffield/generics/slices"
 	"github.com/jesseduffield/gocui"
-	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
 )
 
@@ -104,13 +102,6 @@ func (gui *Gui) pushContext(c types.Context, opts ...types.OnFocusOpts) error {
 	return gui.activateContext(c, opts...)
 }
 
-// pushContextWithView is to be used when you don't know which context you
-// want to switch to: you only know the view that you want to switch to. It will
-// look up the context currently active for that view and switch to that context
-func (gui *Gui) pushContextWithView(viewName string) error {
-	return gui.c.PushContext(gui.State.ViewContextMap.Get(viewName))
-}
-
 func (gui *Gui) returnFromContext() error {
 	gui.State.ContextManager.Lock()
 
@@ -165,10 +156,6 @@ func (gui *Gui) deactivateContext(c types.Context) error {
 // if the context's view is set to another context we do nothing.
 // if the context's view is the current view we trigger a focus; re-selecting the current item.
 func (gui *Gui) postRefreshUpdate(c types.Context) error {
-	if gui.State.ViewContextMap.Get(c.GetViewName()).GetKey() != c.GetKey() {
-		return nil
-	}
-
 	if err := c.HandleRender(); err != nil {
 		return err
 	}
@@ -187,12 +174,6 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	v, err := gui.g.View(viewName)
 	if err != nil {
 		return err
-	}
-
-	originalViewContext := gui.State.ViewContextMap.Get(viewName)
-	var originalViewContextKey types.ContextKey = ""
-	if originalViewContext != nil {
-		originalViewContextKey = originalViewContext.GetKey()
 	}
 
 	gui.setWindowContext(c)
@@ -215,15 +196,6 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	}
 
 	v.Visible = true
-
-	// if the new context's view was previously displaying another context, render the new context
-	if originalViewContextKey != c.GetKey() {
-		if err := c.HandleRender(); err != nil {
-			return err
-		}
-	}
-
-	gui.ViewContextMapSet(viewName, c)
 
 	gui.g.Cursor = v.Editable
 
@@ -251,16 +223,6 @@ func (gui *Gui) optionsMapToString(optionsMap map[string]string) string {
 
 func (gui *Gui) renderOptionsMap(optionsMap map[string]string) {
 	_ = gui.renderString(gui.Views.Options, gui.optionsMapToString(optionsMap))
-}
-
-// also setting context on view for now. We'll need to pick one of these two approaches to stick with.
-func (gui *Gui) ViewContextMapSet(viewName string, c types.Context) {
-	gui.State.ViewContextMap.Set(viewName, c)
-	view, err := gui.g.View(viewName)
-	if err != nil {
-		panic(err)
-	}
-	view.Context = string(c.GetKey())
 }
 
 // // currently unused
@@ -396,19 +358,17 @@ func (gui *Gui) changeMainViewsContext(c types.Context) {
 		return
 	}
 
-	switch c.GetKey() {
-	case context.MAIN_NORMAL_CONTEXT_KEY, context.MAIN_PATCH_BUILDING_CONTEXT_KEY, context.MAIN_STAGING_CONTEXT_KEY, context.MAIN_MERGING_CONTEXT_KEY:
-		gui.ViewContextMapSet(gui.Views.Main.Name(), c)
-		gui.ViewContextMapSet(gui.Views.Secondary.Name(), c)
-	default:
-		panic(fmt.Sprintf("unknown context for main: %s", c.GetKey()))
-	}
-
 	gui.State.MainContext = c.GetKey()
 }
 
 func (gui *Gui) rerenderView(view *gocui.View) error {
-	return gui.State.ViewContextMap.Get(view.Name()).HandleRender()
+	context, ok := gui.contextForView(view.Name())
+	if !ok {
+		gui.Log.Errorf("no context found for view %s", view.Name())
+		return nil
+	}
+
+	return context.HandleRender()
 }
 
 func (gui *Gui) getSideContextSelectedItemId() string {
@@ -418,11 +378,6 @@ func (gui *Gui) getSideContextSelectedItemId() string {
 	}
 
 	return currentSideContext.GetSelectedItemId()
-}
-
-func (gui *Gui) isContextVisible(c types.Context) bool {
-	return gui.State.WindowViewNameMap[c.GetWindowName()] == c.GetViewName() &&
-		gui.State.ViewContextMap.Get(c.GetViewName()).GetKey() == c.GetKey()
 }
 
 // currently unused

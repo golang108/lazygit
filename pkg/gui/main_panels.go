@@ -107,7 +107,8 @@ func (gui *Gui) refreshMainView(opts *viewUpdateOpts, view *gocui.View) error {
 	if context == nil {
 		context = gui.State.Contexts.Normal
 	}
-	gui.ViewContextMapSet(view.Name(), context)
+
+	// TODO: set context here
 
 	if err := gui.runTaskForView(view, opts.task); err != nil {
 		gui.c.Log.Error(err)

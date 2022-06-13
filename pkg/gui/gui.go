@@ -175,11 +175,9 @@ type GuiRepoState struct {
 	Ptmx              *os.File
 	StartupStage      StartupStage // Allows us to not load everything at once
 
-	MainContext       types.ContextKey // used to keep the main and secondary views' contexts in sync
-	ContextManager    ContextManager
-	Contexts          *context.ContextTree
-	ViewContextMap    *context.ViewContextMap
-	ViewTabContextMap map[string][]context.TabContext
+	MainContext    types.ContextKey // used to keep the main and secondary views' contexts in sync
+	ContextManager ContextManager
+	Contexts       *context.ContextTree
 
 	// WindowViewNameMap is a mapping of windows to the current view of that window.
 	// Some views move between windows for example the commitFiles view and when cycling through
@@ -296,7 +294,6 @@ func (gui *Gui) resetState(startArgs types.StartArgs, reuseState bool) {
 				gui.State.CurrentPopupOpts = nil
 				gui.Mutexes.PopupMutex.Unlock()
 
-				gui.syncViewContexts()
 				return
 			}
 		} else {
@@ -309,10 +306,7 @@ func (gui *Gui) resetState(startArgs types.StartArgs, reuseState bool) {
 	initialContext := initialContext(contextTree, startArgs)
 	initialScreenMode := initialScreenMode(startArgs)
 
-	viewContextMap := context.NewViewContextMap()
-	for viewName, context := range initialViewContextMapping(contextTree) {
-		viewContextMap.Set(viewName, context)
-	}
+	initialWindowViewNameMap := gui.initialWindowViewNameMap(contextTree)
 
 	gui.State = &GuiRepoState{
 		Model: &types.Model{
@@ -338,15 +332,12 @@ func (gui *Gui) resetState(startArgs types.StartArgs, reuseState bool) {
 			CherryPicking: cherrypicking.New(),
 			Diffing:       diffing.New(),
 		},
-		ViewContextMap:    viewContextMap,
-		ViewTabContextMap: gui.initialViewTabContextMap(contextTree),
-		ScreenMode:        initialScreenMode,
+		ScreenMode: initialScreenMode,
 		// TODO: put contexts in the context manager
-		ContextManager: NewContextManager(initialContext),
-		Contexts:       contextTree,
+		ContextManager:    NewContextManager(initialContext),
+		Contexts:          contextTree,
+		WindowViewNameMap: initialWindowViewNameMap,
 	}
-
-	gui.syncViewContexts()
 
 	gui.RepoStateMap[Repo(currentDir)] = gui.State
 }
@@ -380,16 +371,6 @@ func initialContext(contextTree *context.ContextTree, startArgs types.StartArgs)
 	}
 
 	return initialContext
-}
-
-func (gui *Gui) syncViewContexts() {
-	for viewName, context := range gui.State.ViewContextMap.Entries() {
-		view, err := gui.g.View(viewName)
-		if err != nil {
-			panic(err)
-		}
-		view.Context = string(context.GetKey())
-	}
 }
 
 // for now the split view will always be on
@@ -493,58 +474,12 @@ func (gui *Gui) initGocui() (*gocui.Gui, error) {
 	return g, nil
 }
 
-func (gui *Gui) initialViewTabContextMap(contextTree *context.ContextTree) map[string][]context.TabContext {
-	return map[string][]context.TabContext{
+func (gui *Gui) viewTabMap() map[string][]context.TabView {
+	return map[string][]context.TabView{
 		"branches": {
 			{
 				Tab:      gui.c.Tr.LocalBranchesTitle,
-				Context:  contextTree.Branches,
-				ViewName: "branches",
-			},
-			{
-				Tab:      gui.c.Tr.RemotesTitle,
-				Context:  contextTree.Remotes,
-				ViewName: "remotes",
-			},
-			{
-				Tab:      gui.c.Tr.TagsTitle,
-				Context:  contextTree.Tags,
-				ViewName: "tags",
-			},
-		},
-		"commits": {
-			{
-				Tab:      gui.c.Tr.CommitsTitle,
-				Context:  contextTree.LocalCommits,
-				ViewName: "commits",
-			},
-			{
-				Tab:      gui.c.Tr.ReflogCommitsTitle,
-				Context:  contextTree.ReflogCommits,
-				ViewName: "reflogCommits",
-			},
-		},
-		"files": {
-			{
-				Tab:      gui.c.Tr.FilesTitle,
-				Context:  contextTree.Files,
-				ViewName: "files",
-			},
-			{
-				Tab:      gui.c.Tr.SubmodulesTitle,
-				Context:  contextTree.Submodules,
-				ViewName: "submodules",
-			},
-		},
-	}
-}
-
-func (gui *Gui) initialViewTabContextMap2() map[string][]context.TabContext {
-	return map[string][]context.TabContext{
-		"branches": {
-			{
-				Tab:      gui.c.Tr.LocalBranchesTitle,
-				ViewName: "branches",
+				ViewName: "localBranches",
 			},
 			{
 				Tab:      gui.c.Tr.RemotesTitle,
