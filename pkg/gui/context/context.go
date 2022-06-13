@@ -140,6 +140,7 @@ func (self *ViewContextMap) Entries() map[string]types.Context {
 }
 
 type TabContext struct {
-	Tab     string
-	Context types.Context
+	Tab      string
+	Context  types.Context
+	ViewName string
 }

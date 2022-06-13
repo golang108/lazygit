@@ -497,36 +497,82 @@ func (gui *Gui) initialViewTabContextMap(contextTree *context.ContextTree) map[s
 	return map[string][]context.TabContext{
 		"branches": {
 			{
-				Tab:     gui.c.Tr.LocalBranchesTitle,
-				Context: contextTree.Branches,
+				Tab:      gui.c.Tr.LocalBranchesTitle,
+				Context:  contextTree.Branches,
+				ViewName: "branches",
 			},
 			{
-				Tab:     gui.c.Tr.RemotesTitle,
-				Context: contextTree.Remotes,
+				Tab:      gui.c.Tr.RemotesTitle,
+				Context:  contextTree.Remotes,
+				ViewName: "remotes",
 			},
 			{
-				Tab:     gui.c.Tr.TagsTitle,
-				Context: contextTree.Tags,
+				Tab:      gui.c.Tr.TagsTitle,
+				Context:  contextTree.Tags,
+				ViewName: "tags",
 			},
 		},
 		"commits": {
 			{
-				Tab:     gui.c.Tr.CommitsTitle,
-				Context: contextTree.LocalCommits,
+				Tab:      gui.c.Tr.CommitsTitle,
+				Context:  contextTree.LocalCommits,
+				ViewName: "commits",
 			},
 			{
-				Tab:     gui.c.Tr.ReflogCommitsTitle,
-				Context: contextTree.ReflogCommits,
+				Tab:      gui.c.Tr.ReflogCommitsTitle,
+				Context:  contextTree.ReflogCommits,
+				ViewName: "reflogCommits",
 			},
 		},
 		"files": {
 			{
-				Tab:     gui.c.Tr.FilesTitle,
-				Context: contextTree.Files,
+				Tab:      gui.c.Tr.FilesTitle,
+				Context:  contextTree.Files,
+				ViewName: "files",
 			},
 			{
-				Tab:     gui.c.Tr.SubmodulesTitle,
-				Context: contextTree.Submodules,
+				Tab:      gui.c.Tr.SubmodulesTitle,
+				Context:  contextTree.Submodules,
+				ViewName: "submodules",
+			},
+		},
+	}
+}
+
+func (gui *Gui) initialViewTabContextMap2() map[string][]context.TabContext {
+	return map[string][]context.TabContext{
+		"branches": {
+			{
+				Tab:      gui.c.Tr.LocalBranchesTitle,
+				ViewName: "branches",
+			},
+			{
+				Tab:      gui.c.Tr.RemotesTitle,
+				ViewName: "remotes",
+			},
+			{
+				Tab:      gui.c.Tr.TagsTitle,
+				ViewName: "tags",
+			},
+		},
+		"commits": {
+			{
+				Tab:      gui.c.Tr.CommitsTitle,
+				ViewName: "commits",
+			},
+			{
+				Tab:      gui.c.Tr.ReflogCommitsTitle,
+				ViewName: "reflogCommits",
+			},
+		},
+		"files": {
+			{
+				Tab:      gui.c.Tr.FilesTitle,
+				ViewName: "files",
+			},
+			{
+				Tab:      gui.c.Tr.SubmodulesTitle,
+				ViewName: "submodules",
 			},
 		},
 	}

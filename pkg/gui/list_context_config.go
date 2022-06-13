@@ -57,7 +57,7 @@ func (gui *Gui) branchesListContext() *context.BranchesContext {
 func (gui *Gui) remotesListContext() *context.RemotesContext {
 	return context.NewRemotesContext(
 		func() []*models.Remote { return gui.State.Model.Remotes },
-		gui.Views.Branches,
+		gui.Views.Remotes,
 		func(startIdx int, length int) [][]string {
 			return presentation.GetRemoteListDisplayStrings(gui.State.Model.Remotes, gui.State.Modes.Diffing.Ref)
 		},

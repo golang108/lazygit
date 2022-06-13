@@ -122,8 +122,13 @@ func (gui *Gui) secondaryViewFocused() bool {
 	return state != nil && state.SecondaryFocused
 }
 
-func (gui *Gui) onViewTabClick(viewName string, tabIndex int) error {
-	context := gui.State.ViewTabContextMap[viewName][tabIndex].Context
+func (gui *Gui) onViewTabClick(windowName string, tabIndex int) error {
+	tabs := gui.State.ViewTabContextMap[windowName]
+	if len(tabs) == 0 {
+		return nil
+	}
+
+	context := tabs[tabIndex].Context
 
 	return gui.c.PushContext(context)
 }
@@ -134,10 +139,17 @@ func (gui *Gui) handleNextTab() error {
 		return nil
 	}
 
-	return gui.onViewTabClick(
-		v.Name(),
-		utils.ModuloWithWrap(v.TabIndex+1, len(v.Tabs)),
-	)
+	contextKey := v.Context
+	for _, context := range gui.State.Contexts.Flatten() {
+		if string(context.GetKey()) == contextKey {
+			return gui.onViewTabClick(
+				context.GetWindowName(),
+				utils.ModuloWithWrap(v.TabIndex+1, len(v.Tabs)),
+			)
+		}
+	}
+
+	return nil
 }
 
 func (gui *Gui) handlePrevTab() error {
@@ -146,10 +158,17 @@ func (gui *Gui) handlePrevTab() error {
 		return nil
 	}
 
-	return gui.onViewTabClick(
-		v.Name(),
-		utils.ModuloWithWrap(v.TabIndex-1, len(v.Tabs)),
-	)
+	contextKey := v.Context
+	for _, context := range gui.State.Contexts.Flatten() {
+		if string(context.GetKey()) == contextKey {
+			return gui.onViewTabClick(
+				context.GetWindowName(),
+				utils.ModuloWithWrap(v.TabIndex-1, len(v.Tabs)),
+			)
+		}
+	}
+
+	return nil
 }
 
 // this is the distance we will move the cursor when paging up or down in a view

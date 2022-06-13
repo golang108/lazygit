@@ -841,7 +841,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		mouseKeybindings = append(mouseKeybindings, c.GetMouseKeybindings(opts)...)
 	}
 
-	for _, viewName := range []string{"status", "branches", "remoteBranches", "files", "commits", "commitFiles", "subCommits", "stash"} {
+	for _, viewName := range []string{"status", "remotes", "branches", "remoteBranches", "files", "commits", "commitFiles", "subCommits", "stash"} {
 		bindings = append(bindings, []*types.Binding{
 			{ViewName: viewName, Key: opts.GetKey(opts.Config.Universal.PrevBlock), Modifier: gocui.ModNone, Handler: self.previousSideWindow},
 			{ViewName: viewName, Key: opts.GetKey(opts.Config.Universal.NextBlock), Modifier: gocui.ModNone, Handler: self.nextSideWindow},
@@ -868,24 +868,22 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 		}
 	}
 
-	for viewName := range self.initialViewTabContextMap(self.State.Contexts) {
-		bindings = append(bindings, []*types.Binding{
-			{
-				ViewName:    viewName,
-				Key:         opts.GetKey(opts.Config.Universal.NextTab),
-				Handler:     self.handleNextTab,
-				Description: self.c.Tr.LcNextTab,
-				Tag:         "navigation",
-			},
-			{
-				ViewName:    viewName,
-				Key:         opts.GetKey(opts.Config.Universal.PrevTab),
-				Handler:     self.handlePrevTab,
-				Description: self.c.Tr.LcPrevTab,
-				Tag:         "navigation",
-			},
-		}...)
-	}
+	bindings = append(bindings, []*types.Binding{
+		{
+			ViewName:    "",
+			Key:         opts.GetKey(opts.Config.Universal.NextTab),
+			Handler:     self.handleNextTab,
+			Description: self.c.Tr.LcNextTab,
+			Tag:         "navigation",
+		},
+		{
+			ViewName:    "",
+			Key:         opts.GetKey(opts.Config.Universal.PrevTab),
+			Handler:     self.handlePrevTab,
+			Description: self.c.Tr.LcPrevTab,
+			Tag:         "navigation",
+		},
+	}...)
 
 	return bindings, mouseKeybindings
 }
@@ -914,7 +912,7 @@ func (gui *Gui) resetKeybindings() error {
 		}
 	}
 
-	for viewName := range gui.initialViewTabContextMap(gui.State.Contexts) {
+	for viewName := range gui.initialViewTabContextMap2() {
 		viewName := viewName
 		tabClickCallback := func(tabIndex int) error { return gui.onViewTabClick(viewName, tabIndex) }
 

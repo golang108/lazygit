@@ -196,7 +196,6 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	}
 
 	gui.setWindowContext(c)
-	gui.setViewTabForContext(c)
 
 	if viewName == "main" {
 		gui.changeMainViewsContext(c)
@@ -205,6 +204,7 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	}
 
 	gui.g.SetCurrentContext(string(c.GetKey()))
+	_, _ = gui.g.SetViewOnTop(viewName)
 	if _, err := gui.g.SetCurrentView(viewName); err != nil {
 		return err
 	}
@@ -405,35 +405,6 @@ func (gui *Gui) changeMainViewsContext(c types.Context) {
 	}
 
 	gui.State.MainContext = c.GetKey()
-}
-
-func (gui *Gui) viewTabNames(viewName string) []string {
-	tabContexts := gui.State.ViewTabContextMap[viewName]
-
-	return slices.Map(tabContexts, func(tabContext context.TabContext) string {
-		return tabContext.Tab
-	})
-}
-
-func (gui *Gui) setViewTabForContext(c types.Context) {
-	// search for the context in our map and if we find it, set the tab for the corresponding view
-	tabContexts, ok := gui.State.ViewTabContextMap[c.GetViewName()]
-	if !ok {
-		return
-	}
-
-	for tabIndex, tabContext := range tabContexts {
-		if tabContext.Context.GetKey() == c.GetKey() {
-			// get the view, set the tab
-			v, err := gui.g.View(c.GetViewName())
-			if err != nil {
-				gui.c.Log.Error(err)
-				return
-			}
-			v.TabIndex = tabIndex
-			return
-		}
-	}
 }
 
 func (gui *Gui) rerenderView(view *gocui.View) error {

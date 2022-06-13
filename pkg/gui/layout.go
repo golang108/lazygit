@@ -1,7 +1,9 @@
 package gui
 
 import (
+	"github.com/jesseduffield/generics/slices"
 	"github.com/jesseduffield/gocui"
+	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/theme"
 )
 
@@ -188,11 +190,19 @@ func (gui *Gui) onInitialViewsCreation() error {
 	gui.g.Mutexes.ViewsMutex.Lock()
 	// add tabs to views
 	for _, view := range gui.g.Views() {
-		tabs := gui.viewTabNames(view.Name())
-		if len(tabs) == 0 {
-			continue
+		// if the view is in our mapping, we'll set the tabs and the tab index
+		for _, values := range gui.initialViewTabContextMap2() {
+			index := slices.IndexFunc(values, func(tabContext context.TabContext) bool {
+				return tabContext.ViewName == view.Name()
+			})
+
+			if index != -1 {
+				view.Tabs = slices.Map(values, func(tabContext context.TabContext) string {
+					return tabContext.Tab
+				})
+				view.TabIndex = index
+			}
 		}
-		view.Tabs = tabs
 	}
 	gui.g.Mutexes.ViewsMutex.Unlock()
 

@@ -12,6 +12,8 @@ type Views struct {
 	Status         *gocui.View
 	Files          *gocui.View
 	Branches       *gocui.View
+	Remotes        *gocui.View
+	Tags           *gocui.View
 	RemoteBranches *gocui.View
 	Commits        *gocui.View
 	Stash          *gocui.View
@@ -50,6 +52,9 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		// no overlapping views
 		{viewPtr: &gui.Views.Status, name: "status"},
 		{viewPtr: &gui.Views.Files, name: "files"},
+		// this is a new view
+		{viewPtr: &gui.Views.Tags, name: "tags"},
+		{viewPtr: &gui.Views.Remotes, name: "remotes"},
 		{viewPtr: &gui.Views.Branches, name: "branches"},
 		{viewPtr: &gui.Views.RemoteBranches, name: "remoteBranches"},
 		{viewPtr: &gui.Views.Commits, name: "commits"},
@@ -95,6 +100,8 @@ func (gui *Gui) controlledViews() []controlledView {
 		{viewName: "secondary", windowName: "secondary", frame: true},
 		{viewName: "status", windowName: "status", frame: true},
 		{viewName: "files", windowName: "files", frame: true},
+		{viewName: "tags", windowName: "branches", frame: true},
+		{viewName: "remotes", windowName: "branches", frame: true},
 		{viewName: "branches", windowName: "branches", frame: true},
 		{viewName: "remoteBranches", windowName: "branches", frame: true},
 		{viewName: "commitFiles", windowName: gui.State.Contexts.CommitFiles.GetWindowName(), frame: true},
@@ -139,6 +146,12 @@ func (gui *Gui) createAllViews() error {
 
 	gui.Views.Branches.Title = gui.c.Tr.BranchesTitle
 	gui.Views.Branches.FgColor = theme.GocuiDefaultTextColor
+
+	gui.Views.Remotes.Title = gui.c.Tr.RemotesTitle
+	gui.Views.Remotes.FgColor = theme.GocuiDefaultTextColor
+
+	gui.Views.Tags.Title = gui.c.Tr.TagsTitle
+	gui.Views.Tags.FgColor = theme.GocuiDefaultTextColor
 
 	gui.Views.RemoteBranches.FgColor = theme.GocuiDefaultTextColor
 
@@ -203,6 +216,8 @@ func initialViewContextMapping(contextTree *context.ContextTree) map[string]type
 		"status":         contextTree.Status,
 		"files":          contextTree.Files,
 		"branches":       contextTree.Branches,
+		"remotes":        contextTree.Remotes,
+		"tags":           contextTree.Tags,
 		"remoteBranches": contextTree.RemoteBranches,
 		"commits":        contextTree.LocalCommits,
 		"commitFiles":    contextTree.CommitFiles,
