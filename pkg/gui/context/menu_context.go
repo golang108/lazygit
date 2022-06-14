@@ -35,12 +35,13 @@ func NewMenuContext(
 		MenuViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:        "menu",
-				WindowName:      "menu",
-				Key:             "menu",
-				Kind:            types.PERSISTENT_POPUP,
-				OnGetOptionsMap: getOptionsMap,
-				Focusable:       true,
+				ViewName:              "menu",
+				WindowName:            "menu",
+				Key:                   "menu",
+				Kind:                  types.PERSISTENT_POPUP,
+				OnGetOptionsMap:       getOptionsMap,
+				Focusable:             true,
+				HasUncontrolledBounds: true,
 			}), ContextCallbackOpts{
 				OnFocus: onFocus,
 			}),

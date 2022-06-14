@@ -15,6 +15,9 @@ const (
 	EXTRAS_CONTEXT
 	// only used by the one global context
 	GLOBAL_CONTEXT
+	// a display context only renders a view. It has no keybindings associated and
+	// it cannot receive focus.
+	DISPLAY_CONTEXT
 )
 
 type ParentContexter interface {
@@ -38,6 +41,9 @@ type IBaseContext interface {
 	// of the same transient context can appear at once meaning one might be 'stolen'
 	// from another window.
 	IsTransient() bool
+	// this tells us if the view's bounds are determined by its window or if they're
+	// determined independently.
+	HasControlledBounds() bool
 
 	// returns the desired title for the view upon activation. If there is no desired title (returns empty string), then
 	// no title will be set

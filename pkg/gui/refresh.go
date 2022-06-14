@@ -332,7 +332,7 @@ func (gui *Gui) refreshMergeState() error {
 	gui.State.Panels.Merging.Lock()
 	defer gui.State.Panels.Merging.Unlock()
 
-	if gui.currentContext().GetKey() != context.MAIN_MERGING_CONTEXT_KEY {
+	if gui.currentContext().GetKey() != context.MERGING_MAIN_CONTEXT_KEY {
 		return nil
 	}
 

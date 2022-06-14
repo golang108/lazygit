@@ -16,8 +16,9 @@ type BaseContext struct {
 	mouseKeybindingsFns []types.MouseKeybindingsFn
 	onClickFn           func() error
 
-	focusable bool
-	transient bool
+	focusable           bool
+	transient           bool
+	hasControlledBounds bool
 
 	*ParentContextMgr
 }
@@ -25,26 +26,30 @@ type BaseContext struct {
 var _ types.IBaseContext = &BaseContext{}
 
 type NewBaseContextOpts struct {
-	Kind       types.ContextKind
-	Key        types.ContextKey
-	ViewName   string
-	WindowName string
-	Focusable  bool
-	Transient  bool
+	Kind                  types.ContextKind
+	Key                   types.ContextKey
+	ViewName              string
+	WindowName            string
+	Focusable             bool
+	Transient             bool
+	HasUncontrolledBounds bool // negating for the sake of making false the default
 
 	OnGetOptionsMap func() map[string]string
 }
 
 func NewBaseContext(opts NewBaseContextOpts) *BaseContext {
+	hasControlledBounds := !opts.HasUncontrolledBounds
+
 	return &BaseContext{
-		kind:             opts.Kind,
-		key:              opts.Key,
-		ViewName:         opts.ViewName,
-		windowName:       opts.WindowName,
-		onGetOptionsMap:  opts.OnGetOptionsMap,
-		focusable:        opts.Focusable,
-		transient:        opts.Transient,
-		ParentContextMgr: &ParentContextMgr{},
+		kind:                opts.Kind,
+		key:                 opts.Key,
+		ViewName:            opts.ViewName,
+		windowName:          opts.WindowName,
+		onGetOptionsMap:     opts.OnGetOptionsMap,
+		focusable:           opts.Focusable,
+		transient:           opts.Transient,
+		hasControlledBounds: hasControlledBounds,
+		ParentContextMgr:    &ParentContextMgr{},
 	}
 }
 
@@ -121,6 +126,10 @@ func (self *BaseContext) IsFocusable() bool {
 
 func (self *BaseContext) IsTransient() bool {
 	return self.transient
+}
+
+func (self *BaseContext) HasControlledBounds() bool {
+	return self.hasControlledBounds
 }
 
 func (self *BaseContext) Title() string {

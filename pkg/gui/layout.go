@@ -83,8 +83,12 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 		return view, err
 	}
 
-	for _, arg := range gui.controlledViews() {
-		_, err := setViewFromDimensions(arg.viewName, arg.windowName)
+	for _, context := range gui.State.Contexts.Flatten() {
+		if !context.HasControlledBounds() {
+			continue
+		}
+
+		_, err := setViewFromDimensions(context.GetViewName(), context.GetWindowName())
 		if err != nil && err.Error() != UNKNOWN_VIEW_ERROR_MSG {
 			return err
 		}

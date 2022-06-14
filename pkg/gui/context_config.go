@@ -49,7 +49,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Kind:       types.MAIN_CONTEXT,
 				ViewName:   "main",
 				WindowName: "main",
-				Key:        context.MAIN_NORMAL_CONTEXT_KEY,
+				Key:        context.NORMAL_MAIN_CONTEXT_KEY,
 				Focusable:  false,
 			}),
 			context.ContextCallbackOpts{
@@ -58,12 +58,42 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				},
 			},
 		),
+		NormalSecondary: context.NewSimpleContext(
+			context.NewBaseContext(context.NewBaseContextOpts{
+				Kind:       types.MAIN_CONTEXT,
+				ViewName:   "secondary",
+				WindowName: "secondary",
+				Key:        context.NORMAL_SECONDARY_CONTEXT_KEY,
+				Focusable:  false,
+			}),
+			context.ContextCallbackOpts{},
+		),
+		StagingSecondary: context.NewSimpleContext(
+			context.NewBaseContext(context.NewBaseContextOpts{
+				Kind:       types.MAIN_CONTEXT,
+				ViewName:   "stagingSecondary",
+				WindowName: "secondary",
+				Key:        context.STAGING_SECONDARY_CONTEXT_KEY,
+				Focusable:  false,
+			}),
+			context.ContextCallbackOpts{},
+		),
+		PatchBuildingSecondary: context.NewSimpleContext(
+			context.NewBaseContext(context.NewBaseContextOpts{
+				Kind:       types.MAIN_CONTEXT,
+				ViewName:   "patchBuildingsecondary",
+				WindowName: "secondary",
+				Key:        context.PATCH_BUILDING_SECONDARY_CONTEXT_KEY,
+				Focusable:  false,
+			}),
+			context.ContextCallbackOpts{},
+		),
 		Staging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
 				ViewName:   "staging",
 				WindowName: "main",
-				Key:        context.MAIN_STAGING_CONTEXT_KEY,
+				Key:        context.STAGING_MAIN_CONTEXT_KEY,
 				Focusable:  true,
 			}),
 			context.ContextCallbackOpts{
@@ -87,7 +117,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Kind:       types.MAIN_CONTEXT,
 				ViewName:   "patchBuilding",
 				WindowName: "main",
-				Key:        context.MAIN_PATCH_BUILDING_CONTEXT_KEY,
+				Key:        context.PATCH_BUILDING_MAIN_CONTEXT_KEY,
 				Focusable:  true,
 			}),
 			context.ContextCallbackOpts{
@@ -106,7 +136,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Kind:            types.MAIN_CONTEXT,
 				ViewName:        "merging",
 				WindowName:      "main",
-				Key:             context.MAIN_MERGING_CONTEXT_KEY,
+				Key:             context.MERGING_MAIN_CONTEXT_KEY,
 				OnGetOptionsMap: gui.getMergingOptions,
 				Focusable:       true,
 			}),
@@ -116,11 +146,12 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		),
 		Confirmation: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
-				Kind:       types.TEMPORARY_POPUP,
-				ViewName:   "confirmation",
-				WindowName: "confirmation",
-				Key:        context.CONFIRMATION_CONTEXT_KEY,
-				Focusable:  true,
+				Kind:                  types.TEMPORARY_POPUP,
+				ViewName:              "confirmation",
+				WindowName:            "confirmation",
+				Key:                   context.CONFIRMATION_CONTEXT_KEY,
+				Focusable:             true,
+				HasUncontrolledBounds: true,
 			}),
 			context.ContextCallbackOpts{
 				OnFocus: OnFocusWrapper(gui.handleAskFocused),
@@ -128,11 +159,12 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		),
 		CommitMessage: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
-				Kind:       types.PERSISTENT_POPUP,
-				ViewName:   "commitMessage",
-				WindowName: "commitMessage",
-				Key:        context.COMMIT_MESSAGE_CONTEXT_KEY,
-				Focusable:  true,
+				Kind:                  types.PERSISTENT_POPUP,
+				ViewName:              "commitMessage",
+				WindowName:            "commitMessage",
+				Key:                   context.COMMIT_MESSAGE_CONTEXT_KEY,
+				Focusable:             true,
+				HasUncontrolledBounds: true,
 			}),
 			context.ContextCallbackOpts{
 				OnFocus: OnFocusWrapper(gui.handleCommitMessageFocused),
@@ -164,6 +196,12 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				},
 			},
 		),
+		// TODO: consider adding keys. Maybe they're not needed?
+		Options:      context.NewDisplayContext("", "options", "options"),
+		AppStatus:    context.NewDisplayContext("", "appStatus", "appStatus"),
+		SearchPrefix: context.NewDisplayContext("", "searchPrefix", "searchPrefix"),
+		Information:  context.NewDisplayContext("", "information", "information"),
+		Limit:        context.NewDisplayContext("", "limit", "limit"),
 	}
 }
 

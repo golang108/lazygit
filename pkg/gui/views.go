@@ -72,9 +72,9 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 		{viewPtr: &gui.Views.CommitFiles, name: "commitFiles"},
 
 		{viewPtr: &gui.Views.Staging, name: "staging"},
-		{viewPtr: &gui.Views.StagingSecondary, name: "secondaryStaging"},
+		{viewPtr: &gui.Views.StagingSecondary, name: "stagingSecondary"},
 		{viewPtr: &gui.Views.PatchBuilding, name: "patchBuilding"},
-		{viewPtr: &gui.Views.PatchBuildingSecondary, name: "secondaryPatchBuilding"},
+		{viewPtr: &gui.Views.PatchBuildingSecondary, name: "patchBuildingSecondary"},
 		{viewPtr: &gui.Views.Merging, name: "merging"},
 		{viewPtr: &gui.Views.Secondary, name: "secondary"},
 		{viewPtr: &gui.Views.Main, name: "main"},
@@ -101,55 +101,13 @@ func (gui *Gui) orderedViewNameMappings() []viewNameMapping {
 	}
 }
 
-type controlledView struct {
-	viewName   string
-	windowName string
-}
-
-// controlled views have their size and position determined in arrangement.go.
-// Some views, like the confirmation panel, are currently sized at the time of
-// displaying the view, based on the view's contents.
-func (gui *Gui) controlledViews() []controlledView {
-	return []controlledView{
-		{viewName: "main", windowName: "main"},
-		{viewName: "secondary", windowName: "secondary"},
-		{viewName: "staging", windowName: "main"},
-		{viewName: "secondaryStaging", windowName: "secondary"},
-		{viewName: "patchBuilding", windowName: "main"},
-		{viewName: "secondaryPatchBuilding", windowName: "secondary"},
-		{viewName: "merging", windowName: "main"},
-
-		{viewName: "status", windowName: "status"},
-		{viewName: "submodules", windowName: "files"},
-		{viewName: "files", windowName: "files"},
-		{viewName: "tags", windowName: "branches"},
-		{viewName: "remotes", windowName: "branches"},
-		{viewName: "localBranches", windowName: "branches"},
-		{viewName: "remoteBranches", windowName: "branches"},
-		{viewName: "commitFiles", windowName: gui.State.Contexts.CommitFiles.GetWindowName()},
-		{viewName: "subCommits", windowName: gui.State.Contexts.SubCommits.GetWindowName()},
-		{viewName: "reflogCommits", windowName: "commits"},
-		{viewName: "commits", windowName: "commits"},
-		{viewName: "stash", windowName: "stash"},
-		{viewName: "options", windowName: "options"},
-		{viewName: "searchPrefix", windowName: "searchPrefix"},
-		{viewName: "search", windowName: "search"},
-		{viewName: "appStatus", windowName: "appStatus"},
-		{viewName: "information", windowName: "information"},
-		{viewName: "extras", windowName: "extras"},
-		{viewName: "limit", windowName: "limit"},
-	}
-}
-
 func (gui *Gui) windowForView(viewName string) string {
-	for _, v := range gui.controlledViews() {
-		if v.viewName == viewName {
-			return v.windowName
-		}
+	context, ok := gui.contextForView(viewName)
+	if !ok {
+		panic("todo: deal with this")
 	}
 
-	// defaulting to view name for now
-	return viewName
+	return context.GetWindowName()
 }
 
 func (gui *Gui) createAllViews() error {

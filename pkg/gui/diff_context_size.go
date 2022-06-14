@@ -13,8 +13,8 @@ var CONTEXT_KEYS_SHOWING_DIFFS = []types.ContextKey{
 	context.STASH_CONTEXT_KEY,
 	context.LOCAL_COMMITS_CONTEXT_KEY,
 	context.SUB_COMMITS_CONTEXT_KEY,
-	context.MAIN_STAGING_CONTEXT_KEY,
-	context.MAIN_PATCH_BUILDING_CONTEXT_KEY,
+	context.STAGING_MAIN_CONTEXT_KEY,
+	context.PATCH_BUILDING_MAIN_CONTEXT_KEY,
 }
 
 func isShowingDiff(gui *Gui) bool {
@@ -60,9 +60,9 @@ func (gui *Gui) handleDiffContextSizeChange() error {
 	currentContext := gui.currentStaticContext()
 	switch currentContext.GetKey() {
 	// we make an exception for our staging and patch building contexts because they actually need to refresh their state afterwards.
-	case context.MAIN_PATCH_BUILDING_CONTEXT_KEY:
+	case context.PATCH_BUILDING_MAIN_CONTEXT_KEY:
 		return gui.handleRefreshPatchBuildingPanel(-1)
-	case context.MAIN_STAGING_CONTEXT_KEY:
+	case context.STAGING_MAIN_CONTEXT_KEY:
 		return gui.handleRefreshStagingPanel(false, -1)
 	default:
 		return currentContext.HandleRenderToMain()
