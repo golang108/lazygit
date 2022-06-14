@@ -77,7 +77,6 @@ func (gui *Gui) filesRenderToMain() error {
 		cmdObj := gui.git.WorkingTree.WorktreeFileDiffCmdObj(node, false, true, gui.IgnoreWhitespaceInDiffView)
 
 		refreshOpts.secondary = &viewUpdateOpts{
-			title:   gui.c.Tr.StagedChanges,
 			task:    NewRunPtyTask(cmdObj.GetCmd()),
 			context: secondaryContext,
 		}
