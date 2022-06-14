@@ -9,11 +9,12 @@ func (gui *Gui) contextTree() *context.ContextTree {
 	return &context.ContextTree{
 		Global: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
-				Kind:       types.GLOBAL_CONTEXT,
-				ViewName:   "",
-				WindowName: "",
-				Key:        context.GLOBAL_CONTEXT_KEY,
-				Focusable:  false,
+				Kind:                  types.GLOBAL_CONTEXT,
+				ViewName:              "",
+				WindowName:            "",
+				Key:                   context.GLOBAL_CONTEXT_KEY,
+				Focusable:             false,
+				HasUncontrolledBounds: true, // setting to true because the global context doesn't even have a view
 			}),
 			context.ContextCallbackOpts{
 				OnRenderToMain: OnFocusWrapper(gui.statusRenderToMain),
@@ -81,7 +82,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		PatchBuildingSecondary: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "patchBuildingsecondary",
+				ViewName:   "patchBuildingSecondary",
 				WindowName: "secondary",
 				Key:        context.PATCH_BUILDING_SECONDARY_CONTEXT_KEY,
 				Focusable:  false,
