@@ -32,7 +32,7 @@ func NewRemoteBranchesContext(
 		DynamicTitleBuilder: NewDynamicTitleBuilder(c.Tr.RemoteBranchesDynamicTitle),
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "remoteBranches",
+				View:       view,
 				WindowName: "branches",
 				Key:        REMOTE_BRANCHES_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

@@ -2,6 +2,7 @@ package gui
 
 import (
 	"github.com/go-errors/errors"
+	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/commands/patch"
 	"github.com/jesseduffield/lazygit/pkg/gui/lbl"
 )
@@ -106,7 +107,7 @@ func (gui *Gui) refreshAndFocusLblPanel(state *LblPanelState) error {
 
 func (gui *Gui) handleLBLMouseDown() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
-		state.SelectNewLineForRange(gui.Views.Main.SelectedLineIdx())
+		state.SelectNewLineForRange(gui.currentLblMainView().SelectedLineIdx())
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
@@ -114,7 +115,7 @@ func (gui *Gui) handleLBLMouseDown() error {
 
 func (gui *Gui) handleMouseDrag() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
-		state.SelectLine(gui.Views.Main.SelectedLineIdx())
+		state.SelectLine(gui.currentLblMainView().SelectedLineIdx())
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
@@ -134,32 +135,43 @@ func (gui *Gui) refreshMainViewForLineByLine(state *LblPanelState) error {
 	}
 	colorDiff := state.RenderForLineIndices(includedLineIndices)
 
-	gui.Views.Main.Highlight = true
-	gui.Views.Main.Wrap = false
+	mainView := gui.currentLblMainView()
+	mainView.Highlight = true
+	mainView.Wrap = false
 
-	gui.setViewContent(gui.Views.Main, colorDiff)
+	gui.setViewContent(mainView, colorDiff)
 
 	return nil
+}
+
+// I'd prefer not to have knowledge of contexts using this file but I'm not sure
+// how to get around this
+func (gui *Gui) currentLblMainView() *gocui.View {
+	if gui.currentContext().GetKey() == gui.State.Contexts.PatchBuilding.GetKey() {
+		return gui.Views.PatchBuilding
+	} else {
+		return gui.Views.Staging
+	}
 }
 
 // focusSelection works out the best focus for the staging panel given the
 // selected line and size of the hunk
 func (gui *Gui) focusSelection(state *LblPanelState) error {
-	stagingView := gui.Views.Main
+	view := gui.currentLblMainView()
 
-	_, viewHeight := stagingView.Size()
+	_, viewHeight := view.Size()
 	bufferHeight := viewHeight - 1
-	_, origin := stagingView.Origin()
+	_, origin := view.Origin()
 
 	selectedLineIdx := state.GetSelectedLineIdx()
 
 	newOrigin := state.CalculateOrigin(origin, bufferHeight)
 
-	if err := stagingView.SetOriginY(newOrigin); err != nil {
+	if err := view.SetOriginY(newOrigin); err != nil {
 		return err
 	}
 
-	return stagingView.SetCursor(0, selectedLineIdx-newOrigin)
+	return view.SetCursor(0, selectedLineIdx-newOrigin)
 }
 
 func (gui *Gui) handleToggleSelectRange() error {
@@ -212,7 +224,7 @@ func (gui *Gui) handleOpenFileAtLine() error {
 func (gui *Gui) handleLineByLineNextPage() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
 		state.SetLineSelectMode()
-		state.AdjustSelectedLineIdx(gui.pageDelta(gui.Views.Main))
+		state.AdjustSelectedLineIdx(gui.pageDelta(gui.currentLblMainView()))
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
@@ -221,7 +233,7 @@ func (gui *Gui) handleLineByLineNextPage() error {
 func (gui *Gui) handleLineByLinePrevPage() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
 		state.SetLineSelectMode()
-		state.AdjustSelectedLineIdx(-gui.pageDelta(gui.Views.Main))
+		state.AdjustSelectedLineIdx(-gui.pageDelta(gui.currentLblMainView()))
 
 		return gui.refreshAndFocusLblPanel(state)
 	})

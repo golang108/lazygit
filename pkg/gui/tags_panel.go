@@ -12,8 +12,9 @@ func (self *Gui) tagsRenderToMain() error {
 
 	return self.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Tag",
-			task:  task,
+			context: self.State.Contexts.Normal,
+			title:   "Tag",
+			task:    task,
 		},
 	})
 }

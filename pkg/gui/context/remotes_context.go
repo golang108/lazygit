@@ -30,7 +30,7 @@ func NewRemotesContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "remotes",
+				View:       view,
 				WindowName: "branches",
 				Key:        REMOTES_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

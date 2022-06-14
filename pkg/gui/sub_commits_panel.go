@@ -15,8 +15,9 @@ func (gui *Gui) subCommitsRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Commit",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Commit",
+			task:    task,
 		},
 	})
 }

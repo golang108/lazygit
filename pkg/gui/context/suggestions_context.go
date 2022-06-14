@@ -29,7 +29,7 @@ func NewSuggestionsContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "suggestions",
+				View:       view,
 				WindowName: "suggestions",
 				Key:        SUGGESTIONS_CONTEXT_KEY,
 				Kind:       types.PERSISTENT_POPUP,

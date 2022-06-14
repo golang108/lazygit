@@ -10,7 +10,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Global: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:                  types.GLOBAL_CONTEXT,
-				ViewName:              "",
+				View:                  nil, // TODO: see if this breaks anything
 				WindowName:            "",
 				Key:                   context.GLOBAL_CONTEXT_KEY,
 				Focusable:             false,
@@ -23,7 +23,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Status: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.SIDE_CONTEXT,
-				ViewName:   "status",
+				View:       gui.Views.Status,
 				WindowName: "status",
 				Key:        context.STATUS_CONTEXT_KEY,
 				Focusable:  true,
@@ -48,7 +48,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Normal: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "main",
+				View:       gui.Views.Main,
 				WindowName: "main",
 				Key:        context.NORMAL_MAIN_CONTEXT_KEY,
 				Focusable:  false,
@@ -62,7 +62,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		NormalSecondary: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "secondary",
+				View:       gui.Views.Secondary,
 				WindowName: "secondary",
 				Key:        context.NORMAL_SECONDARY_CONTEXT_KEY,
 				Focusable:  false,
@@ -72,7 +72,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		StagingSecondary: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "stagingSecondary",
+				View:       gui.Views.StagingSecondary,
 				WindowName: "secondary",
 				Key:        context.STAGING_SECONDARY_CONTEXT_KEY,
 				Focusable:  false,
@@ -82,7 +82,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		PatchBuildingSecondary: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "patchBuildingSecondary",
+				View:       gui.Views.PatchBuildingSecondary,
 				WindowName: "secondary",
 				Key:        context.PATCH_BUILDING_SECONDARY_CONTEXT_KEY,
 				Focusable:  false,
@@ -92,7 +92,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Staging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "staging",
+				View:       gui.Views.Staging,
 				WindowName: "main",
 				Key:        context.STAGING_MAIN_CONTEXT_KEY,
 				Focusable:  true,
@@ -116,7 +116,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		PatchBuilding: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
-				ViewName:   "patchBuilding",
+				View:       gui.Views.PatchBuilding,
 				WindowName: "main",
 				Key:        context.PATCH_BUILDING_MAIN_CONTEXT_KEY,
 				Focusable:  true,
@@ -135,7 +135,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Merging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:            types.MAIN_CONTEXT,
-				ViewName:        "merging",
+				View:            gui.Views.Merging,
 				WindowName:      "main",
 				Key:             context.MERGING_MAIN_CONTEXT_KEY,
 				OnGetOptionsMap: gui.getMergingOptions,
@@ -148,7 +148,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Confirmation: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:                  types.TEMPORARY_POPUP,
-				ViewName:              "confirmation",
+				View:                  gui.Views.Confirmation,
 				WindowName:            "confirmation",
 				Key:                   context.CONFIRMATION_CONTEXT_KEY,
 				Focusable:             true,
@@ -161,7 +161,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		CommitMessage: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:                  types.PERSISTENT_POPUP,
-				ViewName:              "commitMessage",
+				View:                  gui.Views.CommitMessage,
 				WindowName:            "commitMessage",
 				Key:                   context.COMMIT_MESSAGE_CONTEXT_KEY,
 				Focusable:             true,
@@ -174,7 +174,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Search: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.PERSISTENT_POPUP,
-				ViewName:   "search",
+				View:       gui.Views.Search,
 				WindowName: "search",
 				Key:        context.SEARCH_CONTEXT_KEY,
 				Focusable:  true,
@@ -184,7 +184,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		CommandLog: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:            types.EXTRAS_CONTEXT,
-				ViewName:        "extras",
+				View:            gui.Views.Extras,
 				WindowName:      "extras",
 				Key:             context.COMMAND_LOG_CONTEXT_KEY,
 				OnGetOptionsMap: gui.getMergingOptions,
@@ -198,11 +198,11 @@ func (gui *Gui) contextTree() *context.ContextTree {
 			},
 		),
 		// TODO: consider adding keys. Maybe they're not needed?
-		Options:      context.NewDisplayContext("", "options", "options"),
-		AppStatus:    context.NewDisplayContext("", "appStatus", "appStatus"),
-		SearchPrefix: context.NewDisplayContext("", "searchPrefix", "searchPrefix"),
-		Information:  context.NewDisplayContext("", "information", "information"),
-		Limit:        context.NewDisplayContext("", "limit", "limit"),
+		Options:      context.NewDisplayContext("", gui.Views.Options, "options"),
+		AppStatus:    context.NewDisplayContext("", gui.Views.AppStatus, "appStatus"),
+		SearchPrefix: context.NewDisplayContext("", gui.Views.SearchPrefix, "searchPrefix"),
+		Information:  context.NewDisplayContext("", gui.Views.Information, "information"),
+		Limit:        context.NewDisplayContext("", gui.Views.Limit, "limit"),
 	}
 }
 

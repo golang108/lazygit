@@ -159,6 +159,9 @@ func (gui *Gui) createAllViews() error {
 		view.CanScrollPastBottom = gui.c.UserConfig.Gui.ScrollPastBottom
 	}
 
+	gui.Views.Staging.Title = gui.c.Tr.UnstagedChanges
+	gui.Views.StagingSecondary.Title = gui.c.Tr.StagedChanges
+
 	gui.Views.Limit.Title = gui.c.Tr.NotEnoughSpace
 	gui.Views.Limit.Wrap = true
 

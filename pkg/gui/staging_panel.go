@@ -26,14 +26,6 @@ func (gui *Gui) refreshStagingPanel(forceSecondaryFocused bool, selectedLineIdx 
 		secondaryFocused = !secondaryFocused
 	}
 
-	if secondaryFocused {
-		gui.Views.Main.Title = gui.c.Tr.StagedChanges
-		gui.Views.Secondary.Title = gui.c.Tr.UnstagedChanges
-	} else {
-		gui.Views.Main.Title = gui.c.Tr.UnstagedChanges
-		gui.Views.Secondary.Title = gui.c.Tr.StagedChanges
-	}
-
 	// note for custom diffs, we'll need to send a flag here saying not to use the custom diff
 	diff := gui.git.WorkingTree.WorktreeFileDiff(file, true, secondaryFocused, false)
 	secondaryDiff := gui.git.WorkingTree.WorktreeFileDiff(file, true, !secondaryFocused, false)

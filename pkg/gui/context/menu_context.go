@@ -35,7 +35,7 @@ func NewMenuContext(
 		MenuViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:              "menu",
+				View:                  view,
 				WindowName:            "menu",
 				Key:                   "menu",
 				Kind:                  types.PERSISTENT_POPUP,

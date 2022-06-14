@@ -99,14 +99,14 @@ func (gui *Gui) runTaskForView(view *gocui.View, task updateTask) error {
 	return nil
 }
 
-func (gui *Gui) refreshMainView(opts *viewUpdateOpts, view *gocui.View) error {
+func (gui *Gui) refreshMainView(opts *viewUpdateOpts) error {
+	context := opts.context
+
+	view := context.GetView()
+
 	view.Title = opts.title
 	view.Wrap = !opts.noWrap
 	view.Highlight = opts.highlight
-	context := opts.context
-	if context == nil {
-		context = gui.State.Contexts.Normal
-	}
 
 	// TODO: set context here
 
@@ -120,13 +120,13 @@ func (gui *Gui) refreshMainView(opts *viewUpdateOpts, view *gocui.View) error {
 
 func (gui *Gui) refreshMainViews(opts refreshMainOpts) error {
 	if opts.main != nil {
-		if err := gui.refreshMainView(opts.main, gui.Views.Main); err != nil {
+		if err := gui.refreshMainView(opts.main); err != nil {
 			return err
 		}
 	}
 
 	if opts.secondary != nil {
-		if err := gui.refreshMainView(opts.secondary, gui.Views.Secondary); err != nil {
+		if err := gui.refreshMainView(opts.secondary); err != nil {
 			return err
 		}
 	}

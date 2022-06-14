@@ -89,8 +89,9 @@ func (gui *Gui) statusRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "",
-			task:  NewRenderStringTask(dashboardString),
+			context: gui.State.Contexts.Normal,
+			title:   "",
+			task:    NewRenderStringTask(dashboardString),
 		},
 	})
 }

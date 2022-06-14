@@ -22,8 +22,9 @@ func (gui *Gui) renderDiff() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Diff",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Diff",
+			task:    task,
 		},
 	})
 }

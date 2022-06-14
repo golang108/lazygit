@@ -11,8 +11,9 @@ func (gui *Gui) stashRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Stash",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Stash",
+			task:    task,
 		},
 	})
 }

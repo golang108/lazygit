@@ -12,8 +12,9 @@ func (gui *Gui) remoteBranchesRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Remote Branch",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Remote Branch",
+			task:    task,
 		},
 	})
 }

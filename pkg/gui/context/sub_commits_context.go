@@ -39,7 +39,7 @@ func NewSubCommitsContext(
 		ViewportListContextTrait: &ViewportListContextTrait{
 			ListContextTrait: &ListContextTrait{
 				Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-					ViewName:   "subCommits",
+					View:       view,
 					WindowName: "branches",
 					Key:        SUB_COMMITS_CONTEXT_KEY,
 					Kind:       types.SIDE_CONTEXT,

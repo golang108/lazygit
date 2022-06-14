@@ -20,8 +20,9 @@ func (gui *Gui) remotesRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Remote",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Remote",
+			task:    task,
 		},
 	})
 }

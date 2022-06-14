@@ -1,6 +1,7 @@
 package context
 
 import (
+	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
 )
 
@@ -35,12 +36,12 @@ func NewSimpleContext(baseContext *BaseContext, opts ContextCallbackOpts) *Simpl
 var _ types.Context = &SimpleContext{}
 
 // A Display context only renders a view. It has no keybindings and is not focusable.
-func NewDisplayContext(key types.ContextKey, viewName string, windowName string) types.Context {
+func NewDisplayContext(key types.ContextKey, view *gocui.View, windowName string) types.Context {
 	return NewSimpleContext(
 		NewBaseContext(NewBaseContextOpts{
 			Kind:       types.DISPLAY_CONTEXT,
 			Key:        key,
-			ViewName:   viewName,
+			View:       view,
 			WindowName: windowName,
 			Focusable:  false,
 			Transient:  false,

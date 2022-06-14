@@ -8,7 +8,7 @@ import (
 type BaseContext struct {
 	kind            types.ContextKind
 	key             types.ContextKey
-	ViewName        string
+	view            *gocui.View
 	windowName      string
 	onGetOptionsMap func() map[string]string
 
@@ -28,7 +28,7 @@ var _ types.IBaseContext = &BaseContext{}
 type NewBaseContextOpts struct {
 	Kind                  types.ContextKind
 	Key                   types.ContextKey
-	ViewName              string
+	View                  *gocui.View
 	WindowName            string
 	Focusable             bool
 	Transient             bool
@@ -43,7 +43,7 @@ func NewBaseContext(opts NewBaseContextOpts) *BaseContext {
 	return &BaseContext{
 		kind:                opts.Kind,
 		key:                 opts.Key,
-		ViewName:            opts.ViewName,
+		view:                opts.View,
 		windowName:          opts.WindowName,
 		onGetOptionsMap:     opts.OnGetOptionsMap,
 		focusable:           opts.Focusable,
@@ -69,7 +69,16 @@ func (self *BaseContext) GetWindowName() string {
 }
 
 func (self *BaseContext) GetViewName() string {
-	return self.ViewName
+	// for the sake of the global context which has no view
+	if self.view == nil {
+		return ""
+	}
+
+	return self.view.Name()
+}
+
+func (self *BaseContext) GetView() *gocui.View {
+	return self.view
 }
 
 func (self *BaseContext) GetKind() types.ContextKind {

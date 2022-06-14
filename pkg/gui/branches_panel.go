@@ -13,8 +13,9 @@ func (gui *Gui) branchesRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: gui.c.Tr.LogTitle,
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   gui.c.Tr.LogTitle,
+			task:    task,
 		},
 	})
 }

@@ -32,6 +32,7 @@ type IBaseContext interface {
 
 	GetKind() ContextKind
 	GetViewName() string
+	GetView() *gocui.View
 	GetWindowName() string
 	SetWindowName(string)
 	GetKey() ContextKey

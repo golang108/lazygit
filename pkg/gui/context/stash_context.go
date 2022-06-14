@@ -30,7 +30,7 @@ func NewStashContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "stash",
+				View:       view,
 				WindowName: "stash",
 				Key:        STASH_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

@@ -31,7 +31,7 @@ func NewLocalCommitsContext(
 		ViewportListContextTrait: &ViewportListContextTrait{
 			ListContextTrait: &ListContextTrait{
 				Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-					ViewName:   "commits",
+					View:       view,
 					WindowName: "commits",
 					Key:        LOCAL_COMMITS_CONTEXT_KEY,
 					Kind:       types.SIDE_CONTEXT,

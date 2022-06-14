@@ -32,8 +32,9 @@ func (gui *Gui) submodulesRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Submodule",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Submodule",
+			task:    task,
 		},
 	})
 }

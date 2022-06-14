@@ -42,8 +42,9 @@ func (gui *Gui) branchCommitsRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Patch",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Patch",
+			task:    task,
 		},
 		secondary: gui.secondaryPatchPanelUpdateOpts(),
 	})

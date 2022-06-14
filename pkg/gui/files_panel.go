@@ -35,8 +35,9 @@ func (gui *Gui) filesRenderToMain() error {
 	if node == nil {
 		return gui.refreshMainViews(refreshMainOpts{
 			main: &viewUpdateOpts{
-				title: "",
-				task:  NewRenderStringTask(gui.c.Tr.NoChangedFiles),
+				context: gui.State.Contexts.Normal,
+				title:   "",
+				task:    NewRenderStringTask(gui.c.Tr.NoChangedFiles),
 			},
 		})
 	}
@@ -54,8 +55,10 @@ func (gui *Gui) filesRenderToMain() error {
 	gui.resetMergeStateWithLock()
 
 	mainContext := gui.State.Contexts.Normal
+	secondaryContext := gui.State.Contexts.NormalSecondary
 	if node.File != nil {
 		mainContext = gui.State.Contexts.Staging
+		secondaryContext = gui.State.Contexts.StagingSecondary
 	}
 
 	split := gui.c.UserConfig.Gui.SplitDiff == "always" || (node.GetHasUnstagedChanges() && node.GetHasStagedChanges())
@@ -63,7 +66,6 @@ func (gui *Gui) filesRenderToMain() error {
 
 	cmdObj := gui.git.WorkingTree.WorktreeFileDiffCmdObj(node, false, mainShowsStaged, gui.IgnoreWhitespaceInDiffView)
 	refreshOpts := refreshMainOpts{main: &viewUpdateOpts{
-		title:   gui.c.Tr.UnstagedChanges,
 		task:    NewRunPtyTask(cmdObj.GetCmd()),
 		context: mainContext,
 	}}
@@ -77,7 +79,7 @@ func (gui *Gui) filesRenderToMain() error {
 		refreshOpts.secondary = &viewUpdateOpts{
 			title:   gui.c.Tr.StagedChanges,
 			task:    NewRunPtyTask(cmdObj.GetCmd()),
-			context: mainContext,
+			context: secondaryContext,
 		}
 	}
 

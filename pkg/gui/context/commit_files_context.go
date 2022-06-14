@@ -34,7 +34,7 @@ func NewCommitFilesContext(
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(
 				NewBaseContext(NewBaseContextOpts{
-					ViewName:   "commitFiles",
+					View:       view,
 					WindowName: "commits",
 					Key:        COMMIT_FILES_CONTEXT_KEY,
 					Kind:       types.SIDE_CONTEXT,

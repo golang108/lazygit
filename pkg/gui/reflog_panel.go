@@ -13,8 +13,9 @@ func (gui *Gui) reflogCommitsRenderToMain() error {
 
 	return gui.refreshMainViews(refreshMainOpts{
 		main: &viewUpdateOpts{
-			title: "Reflog Entry",
-			task:  task,
+			context: gui.State.Contexts.Normal,
+			title:   "Reflog Entry",
+			task:    task,
 		},
 	})
 }

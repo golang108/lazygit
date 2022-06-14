@@ -30,7 +30,7 @@ func NewTagsContext(
 		BasicViewModel: viewModel,
 		ListContextTrait: &ListContextTrait{
 			Context: NewSimpleContext(NewBaseContext(NewBaseContextOpts{
-				ViewName:   "tags",
+				View:       view,
 				WindowName: "branches",
 				Key:        TAGS_CONTEXT_KEY,
 				Kind:       types.SIDE_CONTEXT,

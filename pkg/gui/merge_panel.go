@@ -146,7 +146,7 @@ func (gui *Gui) renderConflicts(hasFocus bool) error {
 				return nil
 			}
 
-			gui.centerYPos(gui.Views.Main, state.GetConflictMiddle())
+			gui.centerYPos(gui.Views.Merging, state.GetConflictMiddle())
 			return nil
 		})
 	}
@@ -246,7 +246,7 @@ func (gui *Gui) escapeMerge() error {
 
 func (gui *Gui) renderingConflicts() bool {
 	currentView := gui.g.CurrentView()
-	if currentView != gui.Views.Main && currentView != gui.Views.Files {
+	if currentView != gui.Views.Merging && currentView != gui.Views.Files {
 		return false
 	}
 

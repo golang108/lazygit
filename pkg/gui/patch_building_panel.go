@@ -125,7 +125,7 @@ func (gui *Gui) secondaryPatchPanelUpdateOpts() *viewUpdateOpts {
 			title:     "Custom Patch",
 			noWrap:    true,
 			highlight: true,
-			context:   gui.State.Contexts.PatchBuilding,
+			context:   gui.State.Contexts.PatchBuildingSecondary,
 			task:      NewRenderStringWithoutScrollTask(patch),
 		}
 	}
