@@ -160,7 +160,24 @@ func (gui *Gui) createAllViews() error {
 	}
 
 	gui.Views.Staging.Title = gui.c.Tr.UnstagedChanges
+	gui.Views.Staging.Highlight = true
+	gui.Views.Staging.Wrap = false
+
 	gui.Views.StagingSecondary.Title = gui.c.Tr.StagedChanges
+	gui.Views.StagingSecondary.Highlight = true
+	gui.Views.StagingSecondary.Wrap = false
+
+	gui.Views.PatchBuilding.Title = "Patch" // TODO: i18n
+	gui.Views.PatchBuilding.Highlight = true
+	gui.Views.PatchBuilding.Wrap = false
+
+	gui.Views.PatchBuildingSecondary.Title = "Custom Patch" // TODO: i18n
+	gui.Views.PatchBuildingSecondary.Highlight = true
+	gui.Views.PatchBuildingSecondary.Wrap = false
+
+	gui.Views.Merging.Title = gui.c.Tr.MergeConflictsTitle
+	gui.Views.Merging.Highlight = true
+	gui.Views.Merging.Wrap = false
 
 	gui.Views.Limit.Title = gui.c.Tr.NotEnoughSpace
 	gui.Views.Limit.Wrap = true

@@ -31,10 +31,10 @@ func (gui *Gui) submodulesRenderToMain() error {
 	}
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   "Submodule",
-			task:    task,
+			title: "Submodule",
+			task:  task,
 		},
 	})
 }

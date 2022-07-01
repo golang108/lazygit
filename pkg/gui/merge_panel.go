@@ -152,11 +152,9 @@ func (gui *Gui) renderConflicts(hasFocus bool) error {
 	}
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.mergingMainContextPair(),
 		main: &viewUpdateOpts{
-			title:   gui.c.Tr.MergeConflictsTitle,
-			task:    NewRenderStringWithoutScrollTask(content),
-			context: gui.State.Contexts.Merging,
-			noWrap:  true,
+			task: NewRenderStringWithoutScrollTask(content),
 		},
 	})
 }

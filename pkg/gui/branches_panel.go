@@ -12,10 +12,10 @@ func (gui *Gui) branchesRenderToMain() error {
 	}
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   gui.c.Tr.LogTitle,
-			task:    task,
+			title: gui.c.Tr.LogTitle,
+			task:  task,
 		},
 	})
 }

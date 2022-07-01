@@ -1,20 +1,20 @@
 package gui
 
-func (self *Gui) tagsRenderToMain() error {
+func (gui *Gui) tagsRenderToMain() error {
 	var task updateTask
-	tag := self.State.Contexts.Tags.GetSelected()
+	tag := gui.State.Contexts.Tags.GetSelected()
 	if tag == nil {
 		task = NewRenderStringTask("No tags")
 	} else {
-		cmdObj := self.git.Branch.GetGraphCmdObj(tag.FullRefName())
+		cmdObj := gui.git.Branch.GetGraphCmdObj(tag.FullRefName())
 		task = NewRunCommandTask(cmdObj.GetCmd())
 	}
 
-	return self.refreshMainViews(refreshMainOpts{
+	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: self.State.Contexts.Normal,
-			title:   "Tag",
-			task:    task,
+			title: "Tag",
+			task:  task,
 		},
 	})
 }

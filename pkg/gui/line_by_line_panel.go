@@ -2,7 +2,6 @@ package gui
 
 import (
 	"github.com/go-errors/errors"
-	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/commands/patch"
 	"github.com/jesseduffield/lazygit/pkg/gui/lbl"
 )
@@ -34,22 +33,31 @@ func (gui *Gui) refreshLineByLinePanel(diff string, secondaryDiff string, second
 		SecondaryFocused: secondaryFocused,
 	}
 
-	if err := gui.refreshMainViewForLineByLine(gui.State.Panels.LineByLine); err != nil {
+	mainContent, err := gui.getMainDiffForLbl(gui.State.Panels.LineByLine)
+	if err != nil {
 		return false, err
 	}
 
+	// TODO: see if this should happen AFTER setting content.
 	if err := gui.focusSelection(gui.State.Panels.LineByLine); err != nil {
 		return false, err
 	}
 
-	gui.Views.Secondary.Highlight = true
-	gui.Views.Secondary.Wrap = false
-
 	secondaryPatchParser := patch.NewPatchParser(gui.Log, secondaryDiff)
 
-	gui.setViewContent(gui.Views.Secondary, secondaryPatchParser.Render(-1, -1, nil))
+	pair := gui.currentLblMainPair()
+	gui.moveMainContextPairToTop(pair)
+	secondaryContent := secondaryPatchParser.Render(-1, -1, nil)
 
-	return false, nil
+	return false, gui.refreshMainViews(refreshMainOpts{
+		pair: gui.currentLblMainPair(),
+		main: &viewUpdateOpts{
+			task: NewRenderStringWithoutScrollTask(mainContent),
+		},
+		secondary: &viewUpdateOpts{
+			task: NewRenderStringWithoutScrollTask(secondaryContent),
+		},
+	})
 }
 
 func (gui *Gui) handleSelectPrevLine() error {
@@ -107,7 +115,7 @@ func (gui *Gui) refreshAndFocusLblPanel(state *LblPanelState) error {
 
 func (gui *Gui) handleLBLMouseDown() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
-		state.SelectNewLineForRange(gui.currentLblMainView().SelectedLineIdx())
+		state.SelectNewLineForRange(gui.currentLblMainPair().main.GetView().SelectedLineIdx())
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
@@ -115,13 +123,26 @@ func (gui *Gui) handleLBLMouseDown() error {
 
 func (gui *Gui) handleMouseDrag() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
-		state.SelectLine(gui.currentLblMainView().SelectedLineIdx())
+		state.SelectLine(gui.currentLblMainPair().main.GetView().SelectedLineIdx())
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
 }
 
 func (gui *Gui) refreshMainViewForLineByLine(state *LblPanelState) error {
+	diff, err := gui.getMainDiffForLbl(state)
+	if err != nil {
+		return err
+	}
+
+	mainView := gui.currentLblMainPair().main.GetView()
+
+	gui.setViewContent(mainView, diff)
+
+	return nil
+}
+
+func (gui *Gui) getMainDiffForLbl(state *LblPanelState) (string, error) {
 	var includedLineIndices []int
 	// I'd prefer not to have knowledge of contexts using this file but I'm not sure
 	// how to get around this
@@ -130,34 +151,28 @@ func (gui *Gui) refreshMainViewForLineByLine(state *LblPanelState) error {
 		var err error
 		includedLineIndices, err = gui.git.Patch.PatchManager.GetFileIncLineIndices(filename)
 		if err != nil {
-			return err
+			return "", err
 		}
 	}
 	colorDiff := state.RenderForLineIndices(includedLineIndices)
 
-	mainView := gui.currentLblMainView()
-	mainView.Highlight = true
-	mainView.Wrap = false
-
-	gui.setViewContent(mainView, colorDiff)
-
-	return nil
+	return colorDiff, nil
 }
 
 // I'd prefer not to have knowledge of contexts using this file but I'm not sure
 // how to get around this
-func (gui *Gui) currentLblMainView() *gocui.View {
+func (gui *Gui) currentLblMainPair() MainContextPair {
 	if gui.currentContext().GetKey() == gui.State.Contexts.PatchBuilding.GetKey() {
-		return gui.Views.PatchBuilding
+		return gui.patchBuildingMainContextPair()
 	} else {
-		return gui.Views.Staging
+		return gui.stagingMainContextPair()
 	}
 }
 
 // focusSelection works out the best focus for the staging panel given the
 // selected line and size of the hunk
 func (gui *Gui) focusSelection(state *LblPanelState) error {
-	view := gui.currentLblMainView()
+	view := gui.currentLblMainPair().main.GetView()
 
 	_, viewHeight := view.Size()
 	bufferHeight := viewHeight - 1
@@ -224,7 +239,7 @@ func (gui *Gui) handleOpenFileAtLine() error {
 func (gui *Gui) handleLineByLineNextPage() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
 		state.SetLineSelectMode()
-		state.AdjustSelectedLineIdx(gui.pageDelta(gui.currentLblMainView()))
+		state.AdjustSelectedLineIdx(gui.pageDelta(gui.currentLblMainPair().main.GetView()))
 
 		return gui.refreshAndFocusLblPanel(state)
 	})
@@ -233,7 +248,7 @@ func (gui *Gui) handleLineByLineNextPage() error {
 func (gui *Gui) handleLineByLinePrevPage() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
 		state.SetLineSelectMode()
-		state.AdjustSelectedLineIdx(-gui.pageDelta(gui.currentLblMainView()))
+		state.AdjustSelectedLineIdx(-gui.pageDelta(gui.currentLblMainPair().main.GetView()))
 
 		return gui.refreshAndFocusLblPanel(state)
 	})

@@ -41,10 +41,10 @@ func (gui *Gui) branchCommitsRenderToMain() error {
 	}
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   "Patch",
-			task:    task,
+			title: "Patch",
+			task:  task,
 		},
 		secondary: gui.secondaryPatchPanelUpdateOpts(),
 	})

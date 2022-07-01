@@ -185,7 +185,7 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	}
 
 	gui.g.SetCurrentContext(string(c.GetKey()))
-	_, _ = gui.g.SetViewOnTop(viewName)
+	gui.moveToTopOfWindow(c)
 	if _, err := gui.g.SetCurrentView(viewName); err != nil {
 		return err
 	}

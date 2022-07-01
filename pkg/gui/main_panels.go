@@ -10,18 +10,11 @@ import (
 type viewUpdateOpts struct {
 	title string
 
-	// awkwardly calling this noWrap because of how hard Go makes it to have
-	// a boolean option that defaults to true
-	noWrap bool
-
-	highlight bool
-
 	task updateTask
-
-	context types.Context
 }
 
 type refreshMainOpts struct {
+	pair      MainContextPair
 	main      *viewUpdateOpts
 	secondary *viewUpdateOpts
 }
@@ -99,16 +92,19 @@ func (gui *Gui) runTaskForView(view *gocui.View, task updateTask) error {
 	return nil
 }
 
-func (gui *Gui) refreshMainView(opts *viewUpdateOpts) error {
-	context := opts.context
+func (gui *Gui) moveMainContextPairToTop(pair MainContextPair) {
+	gui.moveToTopOfWindow(pair.main)
+	if pair.secondary != nil {
+		gui.moveToTopOfWindow(pair.secondary)
+	}
+}
 
+func (gui *Gui) refreshMainView(opts *viewUpdateOpts, context types.Context) error {
 	view := context.GetView()
 
-	view.Title = opts.title
-	view.Wrap = !opts.noWrap
-	view.Highlight = opts.highlight
-
-	// TODO: set context here
+	if opts.title != "" {
+		view.Title = opts.title
+	}
 
 	if err := gui.runTaskForView(view, opts.task); err != nil {
 		gui.c.Log.Error(err)
@@ -118,18 +114,55 @@ func (gui *Gui) refreshMainView(opts *viewUpdateOpts) error {
 	return nil
 }
 
+type MainContextPair struct {
+	main      types.Context
+	secondary types.Context
+}
+
+func (gui *Gui) normalMainContextPair() MainContextPair {
+	return MainContextPair{
+		main:      gui.State.Contexts.Normal,
+		secondary: gui.State.Contexts.NormalSecondary,
+	}
+}
+
+func (gui *Gui) stagingMainContextPair() MainContextPair {
+	return MainContextPair{
+		main:      gui.State.Contexts.Staging,
+		secondary: gui.State.Contexts.StagingSecondary,
+	}
+}
+
+func (gui *Gui) patchBuildingMainContextPair() MainContextPair {
+	return MainContextPair{
+		main:      gui.State.Contexts.PatchBuilding,
+		secondary: gui.State.Contexts.PatchBuildingSecondary,
+	}
+}
+
+func (gui *Gui) mergingMainContextPair() MainContextPair {
+	return MainContextPair{
+		main:      gui.State.Contexts.Merging,
+		secondary: nil,
+	}
+}
+
 func (gui *Gui) refreshMainViews(opts refreshMainOpts) error {
 	if opts.main != nil {
-		if err := gui.refreshMainView(opts.main); err != nil {
+		if err := gui.refreshMainView(opts.main, opts.pair.main); err != nil {
 			return err
 		}
 	}
 
 	if opts.secondary != nil {
-		if err := gui.refreshMainView(opts.secondary); err != nil {
+		if err := gui.refreshMainView(opts.secondary, opts.pair.secondary); err != nil {
 			return err
 		}
+	} else if opts.pair.secondary != nil {
+		opts.pair.secondary.GetView().Clear()
 	}
+
+	gui.moveMainContextPairToTop(opts.pair)
 
 	gui.splitMainPanel(opts.secondary != nil)
 

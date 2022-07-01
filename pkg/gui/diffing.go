@@ -21,10 +21,10 @@ func (gui *Gui) renderDiff() error {
 	task := NewRunPtyTask(cmdObj.GetCmd())
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   "Diff",
-			task:    task,
+			title: "Diff",
+			task:  task,
 		},
 	})
 }

@@ -7,9 +7,6 @@ func (gui *Gui) refreshPatchBuildingPanel(selectedLineIdx int) error {
 		return gui.handleEscapePatchBuildingPanel()
 	}
 
-	gui.Views.Main.Title = "Patch"
-	gui.Views.Secondary.Title = "Custom Patch"
-
 	// get diff from commit file that's currently selected
 	node := gui.State.Contexts.CommitFiles.GetSelected()
 	if node == nil {
@@ -122,11 +119,7 @@ func (gui *Gui) secondaryPatchPanelUpdateOpts() *viewUpdateOpts {
 		patch := gui.git.Patch.PatchManager.RenderAggregatedPatchColored(false)
 
 		return &viewUpdateOpts{
-			title:     "Custom Patch",
-			noWrap:    true,
-			highlight: true,
-			context:   gui.State.Contexts.PatchBuildingSecondary,
-			task:      NewRenderStringWithoutScrollTask(patch),
+			task: NewRenderStringWithoutScrollTask(patch),
 		}
 	}
 

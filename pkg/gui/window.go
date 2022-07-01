@@ -2,9 +2,13 @@ package gui
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/jesseduffield/generics/slices"
+	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
+	"github.com/samber/lo"
 )
 
 // A window refers to a place on the screen which can hold one or more views.
@@ -68,4 +72,51 @@ func (gui *Gui) resetWindowContext(c types.Context) {
 			}
 		}
 	}
+}
+
+// I want a way of saying 'move view X to the top of window Y'. I could find some way of getting all the views in a window and then move X in front of all those views. So if a view is already in front we just keep it there. Or should gocui just have its own concept of windows? I'll do the hacky way for now.
+
+func (gui *Gui) moveToTopOfWindow(context types.Context) {
+	view := context.GetView()
+	if view == nil {
+		return
+	}
+
+	window := context.GetWindowName()
+
+	// now I need to find all views in that same window, via contexts. And I guess then I need to find the index of the highest view in that list.
+	viewNamesInWindow := gui.viewNamesInWindow(window)
+
+	// The views list is ordered highest-last, so we're grabbing the last view of the window
+	topView := view
+	for _, currentView := range gui.g.Views() {
+		if lo.Contains(viewNamesInWindow, currentView.Name()) {
+			topView = currentView
+		}
+	}
+
+	gui.Log.Warnf("top view: %s, to move: %s", topView.Name(), view.Name())
+
+	gui.Log.Warnf("views before: %s", strings.Join(slices.Map(gui.g.Views(), func(view *gocui.View) string {
+		return view.Name()
+	}), ", "))
+
+	if err := gui.g.SetViewOnTopOf(view.Name(), topView.Name()); err != nil {
+		gui.Log.Error(err)
+	}
+
+	gui.Log.Warnf("views after: %s", strings.Join(slices.Map(gui.g.Views(), func(view *gocui.View) string {
+		return view.Name()
+	}), ", "))
+}
+
+func (gui *Gui) viewNamesInWindow(windowName string) []string {
+	result := []string{}
+	for _, context := range gui.State.Contexts.Flatten() {
+		if context.GetWindowName() == windowName {
+			result = append(result, context.GetViewName())
+		}
+	}
+
+	return result
 }

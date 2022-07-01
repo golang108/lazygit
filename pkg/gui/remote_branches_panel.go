@@ -11,10 +11,10 @@ func (gui *Gui) remoteBranchesRenderToMain() error {
 	}
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   "Remote Branch",
-			task:    task,
+			title: "Remote Branch",
+			task:  task,
 		},
 	})
 }

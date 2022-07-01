@@ -88,10 +88,10 @@ func (gui *Gui) statusRenderToMain() error {
 		}, "\n\n")
 
 	return gui.refreshMainViews(refreshMainOpts{
+		pair: gui.normalMainContextPair(),
 		main: &viewUpdateOpts{
-			context: gui.State.Contexts.Normal,
-			title:   "",
-			task:    NewRenderStringTask(dashboardString),
+			title: gui.c.Tr.StatusTitle,
+			task:  NewRenderStringTask(dashboardString),
 		},
 	})
 }

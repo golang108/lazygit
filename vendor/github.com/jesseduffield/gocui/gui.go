@@ -365,6 +365,45 @@ func (g *Gui) SetViewOnBottom(name string) (*View, error) {
 	return nil, errors.Wrap(ErrUnknownView, 0)
 }
 
+func (g *Gui) SetViewOnTopOf(toMove string, other string) error {
+	g.Mutexes.ViewsMutex.Lock()
+	defer g.Mutexes.ViewsMutex.Unlock()
+
+	if toMove == other {
+		return nil
+	}
+
+	// need to find the two current positions and then move toMove before other in the list.
+	toMoveIndex := -1
+	otherIndex := -1
+
+	for i, v := range g.views {
+		if v.name == toMove {
+			toMoveIndex = i
+		}
+
+		if v.name == other {
+			otherIndex = i
+		}
+	}
+
+	if toMoveIndex == -1 || otherIndex == -1 {
+		return errors.Wrap(ErrUnknownView, 0)
+	}
+
+	// already on top
+	if toMoveIndex > otherIndex {
+		return nil
+	}
+
+	// need to actually do it the other way around. Last is highest
+	viewToMove := g.views[toMoveIndex]
+
+	g.views = append(g.views[:toMoveIndex], g.views[toMoveIndex+1:]...)
+	g.views = append(g.views[:otherIndex], append([]*View{viewToMove}, g.views[otherIndex:]...)...)
+	return nil
+}
+
 // Views returns all the views in the GUI.
 func (g *Gui) Views() []*View {
 	return g.views
