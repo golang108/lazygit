@@ -10,7 +10,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 		Global: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:                  types.GLOBAL_CONTEXT,
-				View:                  nil, // TODO: see if this breaks anything
+				View:                  nil,
 				WindowName:            "",
 				Key:                   context.GLOBAL_CONTEXT_KEY,
 				Focusable:             false,

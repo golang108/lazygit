@@ -31,7 +31,7 @@ func (gui *Gui) commitFilesRenderToMain() error {
 	return gui.refreshMainViews(refreshMainOpts{
 		pair: pair,
 		main: &viewUpdateOpts{
-			title: "Patch",
+			title: gui.Tr.Patch,
 			task:  task,
 		},
 		secondary: gui.secondaryPatchPanelUpdateOpts(),

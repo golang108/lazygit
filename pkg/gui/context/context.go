@@ -102,7 +102,6 @@ type ContextTree struct {
 
 // the order of this decides which context is initially at the top of its window
 func (self *ContextTree) Flatten() []types.Context {
-	// TODO: add context for staging secondary, etc
 	return []types.Context{
 		self.Global,
 		self.Status,

@@ -167,11 +167,11 @@ func (gui *Gui) createAllViews() error {
 	gui.Views.StagingSecondary.Highlight = true
 	gui.Views.StagingSecondary.Wrap = false
 
-	gui.Views.PatchBuilding.Title = "Patch" // TODO: i18n
+	gui.Views.PatchBuilding.Title = gui.Tr.Patch
 	gui.Views.PatchBuilding.Highlight = true
 	gui.Views.PatchBuilding.Wrap = false
 
-	gui.Views.PatchBuildingSecondary.Title = "Custom Patch" // TODO: i18n
+	gui.Views.PatchBuildingSecondary.Title = gui.Tr.CustomPatch
 	gui.Views.PatchBuildingSecondary.Highlight = true
 	gui.Views.PatchBuildingSecondary.Wrap = false
 

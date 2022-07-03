@@ -26,7 +26,7 @@ func (gui *Gui) refreshPatchBuildingPanel(selectedLineIdx int) error {
 		return err
 	}
 
-	empty, err := gui.refreshLineByLinePanel(diff, secondaryDiff, false, selectedLineIdx)
+	empty, err := gui.refreshLineByLinePanel(diff, secondaryDiff, gui.Tr.Patch, gui.Tr.CustomPatch, false, selectedLineIdx)
 	if err != nil {
 		return err
 	}
@@ -119,7 +119,8 @@ func (gui *Gui) secondaryPatchPanelUpdateOpts() *viewUpdateOpts {
 		patch := gui.git.Patch.PatchManager.RenderAggregatedPatchColored(false)
 
 		return &viewUpdateOpts{
-			task: NewRenderStringWithoutScrollTask(patch),
+			task:  NewRenderStringWithoutScrollTask(patch),
+			title: gui.Tr.CustomPatch,
 		}
 	}
 

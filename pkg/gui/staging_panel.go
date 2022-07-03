@@ -40,7 +40,12 @@ func (gui *Gui) refreshStagingPanel(forceSecondaryFocused bool, selectedLineIdx 
 		diff, secondaryDiff = secondaryDiff, diff
 	}
 
-	empty, err := gui.refreshLineByLinePanel(diff, secondaryDiff, secondaryFocused, selectedLineIdx)
+	title, secondaryTitle := gui.Tr.UnstagedChanges, gui.Tr.StagedChanges
+	if secondaryFocused {
+		title, secondaryTitle = secondaryTitle, title
+	}
+
+	empty, err := gui.refreshLineByLinePanel(diff, secondaryDiff, title, secondaryTitle, secondaryFocused, selectedLineIdx)
 	if err != nil {
 		return err
 	}

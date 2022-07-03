@@ -63,21 +63,29 @@ func (gui *Gui) filesRenderToMain() error {
 	mainShowsStaged := !split && node.GetHasStagedChanges()
 
 	cmdObj := gui.git.WorkingTree.WorktreeFileDiffCmdObj(node, false, mainShowsStaged, gui.IgnoreWhitespaceInDiffView)
+	title := gui.c.Tr.UnstagedChanges
+	if mainShowsStaged {
+		title = gui.c.Tr.StagedChanges
+	}
 	refreshOpts := refreshMainOpts{
 		pair: pair,
 		main: &viewUpdateOpts{
-			task: NewRunPtyTask(cmdObj.GetCmd()),
+			task:  NewRunPtyTask(cmdObj.GetCmd()),
+			title: title,
 		},
-	}
-	if mainShowsStaged {
-		refreshOpts.main.title = gui.c.Tr.StagedChanges
 	}
 
 	if split {
 		cmdObj := gui.git.WorkingTree.WorktreeFileDiffCmdObj(node, false, true, gui.IgnoreWhitespaceInDiffView)
 
+		title := gui.c.Tr.StagedChanges
+		if mainShowsStaged {
+			title = gui.c.Tr.UnstagedChanges
+		}
+
 		refreshOpts.secondary = &viewUpdateOpts{
-			task: NewRunPtyTask(cmdObj.GetCmd()),
+			title: title,
+			task:  NewRunPtyTask(cmdObj.GetCmd()),
 		}
 	}
 

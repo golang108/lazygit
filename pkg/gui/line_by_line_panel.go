@@ -14,7 +14,7 @@ import (
 
 // returns whether the patch is empty so caller can escape if necessary
 // both diffs should be non-coloured because we'll parse them and colour them here
-func (gui *Gui) refreshLineByLinePanel(diff string, secondaryDiff string, secondaryFocused bool, selectedLineIdx int) (bool, error) {
+func (gui *Gui) refreshLineByLinePanel(diff string, secondaryDiff string, title string, secondaryTitle string, secondaryFocused bool, selectedLineIdx int) (bool, error) {
 	gui.splitMainPanel(true)
 
 	var oldState *lbl.State
@@ -51,10 +51,12 @@ func (gui *Gui) refreshLineByLinePanel(diff string, secondaryDiff string, second
 	return false, gui.refreshMainViews(refreshMainOpts{
 		pair: gui.currentLblMainPair(),
 		main: &viewUpdateOpts{
-			task: NewRenderStringWithoutScrollTask(mainContent),
+			task:  NewRenderStringWithoutScrollTask(mainContent),
+			title: title,
 		},
 		secondary: &viewUpdateOpts{
-			task: NewRenderStringWithoutScrollTask(secondaryContent),
+			task:  NewRenderStringWithoutScrollTask(secondaryContent),
+			title: secondaryTitle,
 		},
 	})
 }
