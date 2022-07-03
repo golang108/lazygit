@@ -982,7 +982,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 	}
 
 	// Appends keybindings to jump to a particular sideView using numbers
-	windows := []string{"status", "files", "localBranches", "commits", "stash"}
+	windows := []string{"status", "files", "branches", "commits", "stash"}
 
 	if len(config.Universal.JumpToBlock) != len(windows) {
 		log.Fatal("Jump to block keybindings cannot be set. Exactly 5 keybindings must be supplied.")
