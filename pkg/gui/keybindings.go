@@ -45,12 +45,7 @@ func (gui *Gui) noPopupPanel(f func() error) func() error {
 
 // only to be called from the cheatsheet generate script. This mutates the Gui struct.
 func (self *Gui) GetCheatsheetKeybindings() []*types.Binding {
-	g, err := self.initGocui(true)
-	if err != nil {
-		panic(err)
-	}
-	self.g = g
-	defer g.Close()
+	self.g = &gocui.Gui{}
 	if err := self.createAllViews(); err != nil {
 		panic(err)
 	}

@@ -456,7 +456,7 @@ var RuneReplacements = map[rune]string{
 	graph.CommitSymbol: "o",
 }
 
-func (gui *Gui) initGocui(headless bool) (*gocui.Gui, error) {
+func (gui *Gui) initGocui() (*gocui.Gui, error) {
 	recordEvents := recordingEvents()
 	playMode := gocui.NORMAL
 	if recordEvents {
@@ -465,7 +465,7 @@ func (gui *Gui) initGocui(headless bool) (*gocui.Gui, error) {
 		playMode = gocui.REPLAYING
 	}
 
-	g, err := gocui.NewGui(gocui.OutputTrue, OverlappingEdges, playMode, headless, RuneReplacements)
+	g, err := gocui.NewGui(gocui.OutputTrue, OverlappingEdges, playMode, headless(), RuneReplacements)
 	if err != nil {
 		return nil, err
 	}
@@ -514,7 +514,7 @@ func (gui *Gui) viewTabMap() map[string][]context.TabView {
 
 // Run: setup the gui with keybindings and start the mainloop
 func (gui *Gui) Run(startArgs types.StartArgs) error {
-	g, err := gui.initGocui(headless())
+	g, err := gui.initGocui()
 	if err != nil {
 		return err
 	}
