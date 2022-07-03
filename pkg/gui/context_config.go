@@ -69,26 +69,6 @@ func (gui *Gui) contextTree() *context.ContextTree {
 			}),
 			context.ContextCallbackOpts{},
 		),
-		StagingSecondary: context.NewSimpleContext(
-			context.NewBaseContext(context.NewBaseContextOpts{
-				Kind:       types.MAIN_CONTEXT,
-				View:       gui.Views.StagingSecondary,
-				WindowName: "secondary",
-				Key:        context.STAGING_SECONDARY_CONTEXT_KEY,
-				Focusable:  false,
-			}),
-			context.ContextCallbackOpts{},
-		),
-		PatchBuildingSecondary: context.NewSimpleContext(
-			context.NewBaseContext(context.NewBaseContextOpts{
-				Kind:       types.MAIN_CONTEXT,
-				View:       gui.Views.PatchBuildingSecondary,
-				WindowName: "secondary",
-				Key:        context.PATCH_BUILDING_SECONDARY_CONTEXT_KEY,
-				Focusable:  false,
-			}),
-			context.ContextCallbackOpts{},
-		),
 		Staging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
 				Kind:       types.MAIN_CONTEXT,
@@ -101,17 +81,27 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				OnFocus: func(opts ...types.OnFocusOpts) error {
 					forceSecondaryFocused := false
 					selectedLineIdx := -1
-					if len(opts) > 0 && opts[0].ClickedViewName != "" {
-						if opts[0].ClickedViewName == "staging" || opts[0].ClickedViewName == "secondaryStaging" {
+					if len(opts) > 0 && opts[0].ClickedWindowName != "" {
+						if opts[0].ClickedWindowName == "main" || opts[0].ClickedWindowName == "secondary" {
 							selectedLineIdx = opts[0].ClickedViewLineIdx
 						}
-						if opts[0].ClickedViewName == "secondaryStaging" {
+						if opts[0].ClickedWindowName == "secondary" {
 							forceSecondaryFocused = true
 						}
 					}
 					return gui.onStagingFocus(forceSecondaryFocused, selectedLineIdx)
 				},
 			},
+		),
+		StagingSecondary: context.NewSimpleContext(
+			context.NewBaseContext(context.NewBaseContextOpts{
+				Kind:       types.MAIN_CONTEXT,
+				View:       gui.Views.StagingSecondary,
+				WindowName: "secondary",
+				Key:        context.STAGING_SECONDARY_CONTEXT_KEY,
+				Focusable:  false,
+			}),
+			context.ContextCallbackOpts{},
 		),
 		PatchBuilding: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
@@ -124,13 +114,23 @@ func (gui *Gui) contextTree() *context.ContextTree {
 			context.ContextCallbackOpts{
 				OnFocus: func(opts ...types.OnFocusOpts) error {
 					selectedLineIdx := -1
-					if len(opts) > 0 && (opts[0].ClickedViewName == "patchBuilding" || opts[0].ClickedViewName == "secondaryPatchBuilding") {
+					if len(opts) > 0 && (opts[0].ClickedWindowName == "main") {
 						selectedLineIdx = opts[0].ClickedViewLineIdx
 					}
 
 					return gui.onPatchBuildingFocus(selectedLineIdx)
 				},
 			},
+		),
+		PatchBuildingSecondary: context.NewSimpleContext(
+			context.NewBaseContext(context.NewBaseContextOpts{
+				Kind:       types.MAIN_CONTEXT,
+				View:       gui.Views.PatchBuildingSecondary,
+				WindowName: "secondary",
+				Key:        context.PATCH_BUILDING_SECONDARY_CONTEXT_KEY,
+				Focusable:  false,
+			}),
+			context.ContextCallbackOpts{},
 		),
 		Merging: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{

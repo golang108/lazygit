@@ -186,8 +186,6 @@ type Gui struct {
 	screen         tcell.Screen
 	suspendedMutex sync.Mutex
 	suspended      bool
-
-	currentContext string
 }
 
 // NewGui returns a new Gui object with a given output mode.
@@ -261,10 +259,6 @@ func (g *Gui) Close() {
 // Size returns the terminal's size.
 func (g *Gui) Size() (x, y int) {
 	return g.maxX, g.maxY
-}
-
-func (g *Gui) SetCurrentContext(context string) {
-	g.currentContext = context
 }
 
 // SetRune writes a rune at the given point, relative to the top-left

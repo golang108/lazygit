@@ -2,10 +2,7 @@ package gui
 
 import (
 	"fmt"
-	"strings"
 
-	"github.com/jesseduffield/generics/slices"
-	"github.com/jesseduffield/gocui"
 	"github.com/jesseduffield/lazygit/pkg/gui/context"
 	"github.com/jesseduffield/lazygit/pkg/gui/types"
 	"github.com/samber/lo"
@@ -95,19 +92,9 @@ func (gui *Gui) moveToTopOfWindow(context types.Context) {
 		}
 	}
 
-	gui.Log.Warnf("top view: %s, to move: %s", topView.Name(), view.Name())
-
-	gui.Log.Warnf("views before: %s", strings.Join(slices.Map(gui.g.Views(), func(view *gocui.View) string {
-		return view.Name()
-	}), ", "))
-
 	if err := gui.g.SetViewOnTopOf(view.Name(), topView.Name()); err != nil {
 		gui.Log.Error(err)
 	}
-
-	gui.Log.Warnf("views after: %s", strings.Join(slices.Map(gui.g.Views(), func(view *gocui.View) string {
-		return view.Name()
-	}), ", "))
 }
 
 func (gui *Gui) viewNamesInWindow(windowName string) []string {

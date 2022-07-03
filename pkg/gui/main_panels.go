@@ -93,8 +93,10 @@ func (gui *Gui) runTaskForView(view *gocui.View, task updateTask) error {
 }
 
 func (gui *Gui) moveMainContextPairToTop(pair MainContextPair) {
+	gui.setWindowContext(pair.main)
 	gui.moveToTopOfWindow(pair.main)
 	if pair.secondary != nil {
+		gui.setWindowContext(pair.secondary)
 		gui.moveToTopOfWindow(pair.secondary)
 	}
 }

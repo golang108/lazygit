@@ -99,7 +99,7 @@ type IViewTrait interface {
 }
 
 type OnFocusOpts struct {
-	ClickedViewName    string
+	ClickedWindowName  string
 	ClickedViewLineIdx int
 }
 

@@ -81,7 +81,7 @@ func (gui *Gui) scrollUpMain() error {
 		gui.State.Panels.Merging.UserVerticalScrolling = true
 	}
 
-	gui.scrollUpView(gui.Views.Main)
+	gui.scrollUpView(gui.mainView())
 
 	return nil
 }
@@ -91,9 +91,21 @@ func (gui *Gui) scrollDownMain() error {
 		gui.State.Panels.Merging.UserVerticalScrolling = true
 	}
 
-	gui.scrollDownView(gui.Views.Main)
+	gui.scrollDownView(gui.mainView())
 
 	return nil
+}
+
+func (gui *Gui) mainView() *gocui.View {
+	viewName := gui.getViewNameForWindow("main")
+	view, _ := gui.g.View(viewName)
+	return view
+}
+
+func (gui *Gui) secondaryView() *gocui.View {
+	viewName := gui.getViewNameForWindow("secondary")
+	view, _ := gui.g.View(viewName)
+	return view
 }
 
 func (gui *Gui) scrollLeftMain() error {
@@ -118,13 +130,15 @@ func (gui *Gui) scrollRight(view *gocui.View) {
 }
 
 func (gui *Gui) scrollUpSecondary() error {
-	gui.scrollUpView(gui.Views.Secondary)
+	gui.scrollUpView(gui.secondaryView())
 
 	return nil
 }
 
 func (gui *Gui) scrollDownSecondary() error {
-	gui.scrollDownView(gui.Views.Secondary)
+	secondaryView := gui.secondaryView()
+
+	gui.scrollDownView(secondaryView)
 
 	return nil
 }

@@ -118,8 +118,6 @@ func (gui *Gui) returnFromContext() error {
 
 	gui.State.ContextManager.ContextStack = gui.State.ContextManager.ContextStack[:n]
 
-	gui.g.SetCurrentContext(string(newContext.GetKey()))
-
 	gui.State.ContextManager.Unlock()
 
 	if err := gui.deactivateContext(currentContext); err != nil {
@@ -184,7 +182,6 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 		gui.changeMainViewsContext(gui.State.Contexts.Normal)
 	}
 
-	gui.g.SetCurrentContext(string(c.GetKey()))
 	gui.moveToTopOfWindow(c)
 	if _, err := gui.g.SetCurrentView(viewName); err != nil {
 		return err

@@ -75,7 +75,7 @@ func (self *CommitFilesController) GetKeybindings(opts types.KeybindingsOpts) []
 func (self *CommitFilesController) GetMouseKeybindings(opts types.KeybindingsOpts) []*gocui.ViewMouseBinding {
 	return []*gocui.ViewMouseBinding{
 		{
-			ViewName:    "main",
+			ViewName:    "patchBuilding",
 			Key:         gocui.MouseLeft,
 			Handler:     self.onClickMain,
 			FocusedView: self.context().GetViewName(),
@@ -107,7 +107,7 @@ func (self *CommitFilesController) onClickMain(opts gocui.ViewMouseBindingOpts) 
 	if node == nil {
 		return nil
 	}
-	return self.enterCommitFile(node, types.OnFocusOpts{ClickedViewName: "main", ClickedViewLineIdx: opts.Y})
+	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "main", ClickedViewLineIdx: opts.Y})
 }
 
 func (self *CommitFilesController) checkout(node *filetree.CommitFileNode) error {
@@ -221,7 +221,7 @@ func (self *CommitFilesController) startPatchManager() error {
 }
 
 func (self *CommitFilesController) enter(node *filetree.CommitFileNode) error {
-	return self.enterCommitFile(node, types.OnFocusOpts{ClickedViewName: "", ClickedViewLineIdx: -1})
+	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "", ClickedViewLineIdx: -1})
 }
 
 func (self *CommitFilesController) enterCommitFile(node *filetree.CommitFileNode, opts types.OnFocusOpts) error {
@@ -235,6 +235,8 @@ func (self *CommitFilesController) enterCommitFile(node *filetree.CommitFileNode
 				return err
 			}
 		}
+
+		self.c.Log.Warn("entering commit file")
 
 		return self.c.PushContext(self.contexts.PatchBuilding, opts)
 	}

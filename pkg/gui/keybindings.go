@@ -315,8 +315,7 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Alternative: "fn+down",
 		},
 		{
-			// TODO: create view
-			ViewName: "secondaryStaging",
+			ViewName: "stagingSecondary",
 			Key:      gocui.MouseLeft,
 			Modifier: gocui.ModNone,
 			Handler:  self.handleTogglePanelClick,
@@ -524,12 +523,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Handler:  self.scrollUpMain,
 		},
 		{
-			ViewName: "staging",
-			Key:      gocui.MouseWheelDown,
-			Modifier: gocui.ModNone,
-			Handler:  self.scrollDownMain,
-		},
-		{
 			ViewName:    "patchBuilding",
 			Key:         opts.GetKey(opts.Config.Universal.OpenFile),
 			Handler:     self.handleOpenFileAtLine,
@@ -570,6 +563,42 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Key:      gocui.MouseWheelDown,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollDownMain,
+		},
+		{
+			ViewName: "stagingSecondary",
+			Key:      gocui.MouseWheelDown,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollDownSecondary,
+		},
+		{
+			ViewName: "secondary",
+			Key:      gocui.MouseWheelDown,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollDownSecondary,
+		},
+		{
+			ViewName: "patchBuildingSecondary",
+			Key:      gocui.MouseWheelDown,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollDownSecondary,
+		},
+		{
+			ViewName: "stagingSecondary",
+			Key:      gocui.MouseWheelUp,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollUpSecondary,
+		},
+		{
+			ViewName: "patchBuildingSecondary",
+			Key:      gocui.MouseWheelUp,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollUpSecondary,
+		},
+		{
+			ViewName: "secondary",
+			Key:      gocui.MouseWheelUp,
+			Modifier: gocui.ModNone,
+			Handler:  self.scrollUpSecondary,
 		},
 		{
 			ViewName:    "patchBuilding",
@@ -676,12 +705,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			Key:      gocui.MouseWheelUp,
 			Modifier: gocui.ModNone,
 			Handler:  self.scrollUpMain,
-		},
-		{
-			ViewName: "patchBuilding",
-			Key:      gocui.MouseWheelDown,
-			Modifier: gocui.ModNone,
-			Handler:  self.scrollDownMain,
 		},
 		{
 			ViewName:    "staging",
