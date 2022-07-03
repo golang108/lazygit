@@ -58,9 +58,7 @@ func (gui *Gui) layout(g *gocui.Gui) error {
 			// to render content as soon as it appears, because lazyloaded content (via a pty task)
 			// cares about the size of the view.
 			_, err := g.SetView(viewName, 0, 0, width, height, 0)
-			if view != nil {
-				view.Visible = false
-			}
+			view.Visible = false
 			return view, err
 		}
 

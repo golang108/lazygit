@@ -142,7 +142,6 @@ func (gui *Gui) onViewTabClick(windowName string, tabIndex int) error {
 func (gui *Gui) contextForView(viewName string) (types.Context, bool) {
 	view, err := gui.g.View(viewName)
 	if err != nil {
-		panic(fmt.Sprintf("View not found: %s", viewName))
 		return nil, false
 	}
 
