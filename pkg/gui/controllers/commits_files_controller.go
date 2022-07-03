@@ -236,8 +236,6 @@ func (self *CommitFilesController) enterCommitFile(node *filetree.CommitFileNode
 			}
 		}
 
-		self.c.Log.Warn("entering commit file")
-
 		return self.c.PushContext(self.contexts.PatchBuilding, opts)
 	}
 

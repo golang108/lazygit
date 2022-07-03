@@ -15,9 +15,9 @@ const HORIZONTAL_SCROLL_FACTOR = 3
 // these views need to be re-rendered when the screen mode changes. The commits view,
 // for example, will show authorship information in half and full screen mode.
 func (gui *Gui) rerenderViewsWithScreenModeDependentContent() error {
-	// TODO: just apply to everyone
-	for _, view := range []*gocui.View{gui.Views.Branches, gui.Views.Remotes, gui.Views.Tags, gui.Views.Commits, gui.Views.ReflogCommits, gui.Views.SubCommits} {
-		if err := gui.rerenderView(view); err != nil {
+	// for now we re-render all list views.
+	for _, context := range gui.getListContexts() {
+		if err := gui.rerenderView(context.GetView()); err != nil {
 			return err
 		}
 	}
