@@ -25,7 +25,7 @@ func NewMenuContext(
 ) *MenuContext {
 	viewModel := NewMenuViewModel()
 
-	onFocus := func(...types.OnFocusOpts) error {
+	onFocus := func(types.OnFocusOpts) error {
 		selectedMenuItem := viewModel.GetSelected()
 		renderToDescriptionView(selectedMenuItem.Tooltip)
 		return nil

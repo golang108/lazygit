@@ -241,7 +241,7 @@ func (self *FilesController) press(node *filetree.FileNode) error {
 		return err
 	}
 
-	return self.context().HandleFocus()
+	return self.context().HandleFocus(types.OnFocusOpts{})
 }
 
 func (self *FilesController) checkSelectedFileNode(callback func(*filetree.FileNode) error) func() error {
@@ -329,7 +329,7 @@ func (self *FilesController) stageAll() error {
 		return err
 	}
 
-	return self.contexts.Files.HandleFocus()
+	return self.contexts.Files.HandleFocus(types.OnFocusOpts{})
 }
 
 func (self *FilesController) ignore(node *filetree.FileNode) error {

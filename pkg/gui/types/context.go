@@ -64,8 +64,8 @@ type IBaseContext interface {
 type Context interface {
 	IBaseContext
 
-	HandleFocus(opts ...OnFocusOpts) error
-	HandleFocusLost() error
+	HandleFocus(opts OnFocusOpts) error
+	HandleFocusLost(opts OnFocusLostOpts) error
 	HandleRender() error
 	HandleRenderToMain() error
 }
@@ -101,6 +101,10 @@ type IViewTrait interface {
 type OnFocusOpts struct {
 	ClickedWindowName  string
 	ClickedViewLineIdx int
+}
+
+type OnFocusLostOpts struct {
+	NewContextKey ContextKey
 }
 
 type ContextKey string

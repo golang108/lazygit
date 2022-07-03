@@ -237,7 +237,7 @@ func (gui *Gui) escapeMerge() error {
 
 	// doing this in separate UI thread so that we're not still holding the lock by the time refresh the file
 	gui.OnUIThread(func() error {
-		return gui.pushContext(gui.State.Contexts.Files)
+		return gui.c.PushContext(gui.State.Contexts.Files)
 	})
 	return nil
 }

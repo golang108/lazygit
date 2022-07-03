@@ -17,7 +17,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				HasUncontrolledBounds: true, // setting to true because the global context doesn't even have a view
 			}),
 			context.ContextCallbackOpts{
-				OnRenderToMain: OnFocusWrapper(gui.statusRenderToMain),
+				OnRenderToMain: gui.statusRenderToMain,
 			},
 		),
 		Status: context.NewSimpleContext(
@@ -29,7 +29,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Focusable:  true,
 			}),
 			context.ContextCallbackOpts{
-				OnRenderToMain: OnFocusWrapper(gui.statusRenderToMain),
+				OnRenderToMain: gui.statusRenderToMain,
 			},
 		),
 		Files:          gui.filesListContext(),
@@ -54,7 +54,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Focusable:  false,
 			}),
 			context.ContextCallbackOpts{
-				OnFocus: func(opts ...types.OnFocusOpts) error {
+				OnFocus: func(opts types.OnFocusOpts) error {
 					return nil // TODO: should we do something here? We should allow for scrolling the panel
 				},
 			},
@@ -78,18 +78,24 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Focusable:  true,
 			}),
 			context.ContextCallbackOpts{
-				OnFocus: func(opts ...types.OnFocusOpts) error {
+				OnFocus: func(opts types.OnFocusOpts) error {
 					forceSecondaryFocused := false
 					selectedLineIdx := -1
-					if len(opts) > 0 && opts[0].ClickedWindowName != "" {
-						if opts[0].ClickedWindowName == "main" || opts[0].ClickedWindowName == "secondary" {
-							selectedLineIdx = opts[0].ClickedViewLineIdx
+					if opts.ClickedWindowName != "" {
+						if opts.ClickedWindowName == "main" || opts.ClickedWindowName == "secondary" {
+							selectedLineIdx = opts.ClickedViewLineIdx
 						}
-						if opts[0].ClickedWindowName == "secondary" {
+						if opts.ClickedWindowName == "secondary" {
 							forceSecondaryFocused = true
 						}
 					}
 					return gui.onStagingFocus(forceSecondaryFocused, selectedLineIdx)
+				},
+				OnFocusLost: func(opts types.OnFocusLostOpts) error {
+					gui.escapeLineByLinePanel()
+					// if opts.NewContextKey != context.STAGING_SECONDARY_CONTEXT_KEY {
+					// }
+					return nil
 				},
 			},
 		),
@@ -101,7 +107,14 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Key:        context.STAGING_SECONDARY_CONTEXT_KEY,
 				Focusable:  false,
 			}),
-			context.ContextCallbackOpts{},
+			context.ContextCallbackOpts{
+				OnFocusLost: func(opts types.OnFocusLostOpts) error {
+					gui.escapeLineByLinePanel()
+					// if opts.NewContextKey != context.STAGING_MAIN_CONTEXT_KEY {
+					// }
+					return nil
+				},
+			},
 		),
 		PatchBuilding: context.NewSimpleContext(
 			context.NewBaseContext(context.NewBaseContextOpts{
@@ -112,13 +125,17 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Focusable:  true,
 			}),
 			context.ContextCallbackOpts{
-				OnFocus: func(opts ...types.OnFocusOpts) error {
+				OnFocus: func(opts types.OnFocusOpts) error {
 					selectedLineIdx := -1
-					if len(opts) > 0 && (opts[0].ClickedWindowName == "main") {
-						selectedLineIdx = opts[0].ClickedViewLineIdx
+					if opts.ClickedWindowName == "main" {
+						selectedLineIdx = opts.ClickedViewLineIdx
 					}
 
 					return gui.onPatchBuildingFocus(selectedLineIdx)
+				},
+				OnFocusLost: func(opts types.OnFocusLostOpts) error {
+					gui.escapeLineByLinePanel()
+					return nil
 				},
 			},
 		),
@@ -191,7 +208,7 @@ func (gui *Gui) contextTree() *context.ContextTree {
 				Focusable:       true,
 			}),
 			context.ContextCallbackOpts{
-				OnFocusLost: func() error {
+				OnFocusLost: func(opts types.OnFocusLostOpts) error {
 					gui.Views.Extras.Autoscroll = true
 					return nil
 				},
@@ -208,8 +225,8 @@ func (gui *Gui) contextTree() *context.ContextTree {
 
 // using this wrapper for when an onFocus function doesn't care about any potential
 // props that could be passed
-func OnFocusWrapper(f func() error) func(opts ...types.OnFocusOpts) error {
-	return func(opts ...types.OnFocusOpts) error {
+func OnFocusWrapper(f func() error) func(opts types.OnFocusOpts) error {
+	return func(opts types.OnFocusOpts) error {
 		return f()
 	}
 }

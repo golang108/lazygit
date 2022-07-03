@@ -1,6 +1,9 @@
 package gui
 
-import "github.com/samber/lo"
+import (
+	"github.com/jesseduffield/lazygit/pkg/gui/types"
+	"github.com/samber/lo"
+)
 
 func (gui *Gui) refreshPatchBuildingPanel(selectedLineIdx int) error {
 	if !gui.git.Patch.PatchManager.Active() {
@@ -110,7 +113,7 @@ func (gui *Gui) handleEscapePatchBuildingPanel() error {
 		return gui.c.PushContext(gui.State.Contexts.CommitFiles)
 	} else {
 		// need to re-focus in case the secondary view should now be hidden
-		return gui.currentContext().HandleFocus()
+		return gui.currentContext().HandleFocus(types.OnFocusOpts{})
 	}
 }
 

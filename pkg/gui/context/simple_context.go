@@ -6,21 +6,20 @@ import (
 )
 
 type SimpleContext struct {
-	OnFocus     func(opts ...types.OnFocusOpts) error
-	OnFocusLost func() error
+	OnFocus     func(opts types.OnFocusOpts) error
+	OnFocusLost func(opts types.OnFocusLostOpts) error
 	OnRender    func() error
 	// this is for pushing some content to the main view
-	OnRenderToMain func(opts ...types.OnFocusOpts) error
+	OnRenderToMain func() error
 
 	*BaseContext
 }
 
 type ContextCallbackOpts struct {
-	OnFocus     func(opts ...types.OnFocusOpts) error
-	OnFocusLost func() error
-	OnRender    func() error
-	// this is for pushing some content to the main view
-	OnRenderToMain func(opts ...types.OnFocusOpts) error
+	OnFocus        func(opts types.OnFocusOpts) error
+	OnFocusLost    func(opts types.OnFocusLostOpts) error
+	OnRender       func() error
+	OnRenderToMain func() error
 }
 
 func NewSimpleContext(baseContext *BaseContext, opts ContextCallbackOpts) *SimpleContext {
@@ -50,15 +49,15 @@ func NewDisplayContext(key types.ContextKey, view *gocui.View, windowName string
 	)
 }
 
-func (self *SimpleContext) HandleFocus(opts ...types.OnFocusOpts) error {
+func (self *SimpleContext) HandleFocus(opts types.OnFocusOpts) error {
 	if self.OnFocus != nil {
-		if err := self.OnFocus(opts...); err != nil {
+		if err := self.OnFocus(opts); err != nil {
 			return err
 		}
 	}
 
 	if self.OnRenderToMain != nil {
-		if err := self.OnRenderToMain(opts...); err != nil {
+		if err := self.OnRenderToMain(); err != nil {
 			return err
 		}
 	}
@@ -66,9 +65,9 @@ func (self *SimpleContext) HandleFocus(opts ...types.OnFocusOpts) error {
 	return nil
 }
 
-func (self *SimpleContext) HandleFocusLost() error {
+func (self *SimpleContext) HandleFocusLost(opts types.OnFocusLostOpts) error {
 	if self.OnFocusLost != nil {
-		return self.OnFocusLost()
+		return self.OnFocusLost(opts)
 	}
 	return nil
 }

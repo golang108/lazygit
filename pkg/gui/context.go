@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"errors"
 	"sort"
 	"strings"
 
@@ -62,15 +61,10 @@ func (gui *Gui) replaceContext(c types.Context) error {
 
 	defer gui.State.ContextManager.Unlock()
 
-	return gui.activateContext(c)
+	return gui.activateContext(c, types.OnFocusOpts{})
 }
 
-func (gui *Gui) pushContext(c types.Context, opts ...types.OnFocusOpts) error {
-	// using triple dot but you should only ever pass one of these opt structs
-	if len(opts) > 1 {
-		return errors.New("cannot pass multiple opts to pushContext")
-	}
-
+func (gui *Gui) pushContext(c types.Context, opts types.OnFocusOpts) error {
 	if !c.IsFocusable() {
 		return nil
 	}
@@ -82,7 +76,7 @@ func (gui *Gui) pushContext(c types.Context, opts ...types.OnFocusOpts) error {
 	if c.GetKind() == types.SIDE_CONTEXT {
 		for _, stackContext := range gui.State.ContextManager.ContextStack {
 			if stackContext.GetKey() != c.GetKey() {
-				if err := gui.deactivateContext(stackContext); err != nil {
+				if err := gui.deactivateContext(stackContext, types.OnFocusLostOpts{NewContextKey: c.GetKey()}); err != nil {
 					gui.State.ContextManager.Unlock()
 					return err
 				}
@@ -99,7 +93,7 @@ func (gui *Gui) pushContext(c types.Context, opts ...types.OnFocusOpts) error {
 
 	gui.State.ContextManager.Unlock()
 
-	return gui.activateContext(c, opts...)
+	return gui.activateContext(c, opts)
 }
 
 func (gui *Gui) returnFromContext() error {
@@ -120,14 +114,14 @@ func (gui *Gui) returnFromContext() error {
 
 	gui.State.ContextManager.Unlock()
 
-	if err := gui.deactivateContext(currentContext); err != nil {
+	if err := gui.deactivateContext(currentContext, types.OnFocusLostOpts{NewContextKey: newContext.GetKey()}); err != nil {
 		return err
 	}
 
-	return gui.activateContext(newContext)
+	return gui.activateContext(newContext, types.OnFocusOpts{})
 }
 
-func (gui *Gui) deactivateContext(c types.Context) error {
+func (gui *Gui) deactivateContext(c types.Context, opts types.OnFocusLostOpts) error {
 	view, _ := gui.g.View(c.GetViewName())
 
 	if view != nil && view.IsSearching() {
@@ -143,7 +137,7 @@ func (gui *Gui) deactivateContext(c types.Context) error {
 		view.Visible = false
 	}
 
-	if err := c.HandleFocusLost(); err != nil {
+	if err := c.HandleFocusLost(opts); err != nil {
 		return err
 	}
 
@@ -159,7 +153,7 @@ func (gui *Gui) postRefreshUpdate(c types.Context) error {
 	}
 
 	if gui.currentViewName() == c.GetViewName() {
-		if err := c.HandleFocus(); err != nil {
+		if err := c.HandleFocus(types.OnFocusOpts{}); err != nil {
 			return err
 		}
 	}
@@ -167,7 +161,7 @@ func (gui *Gui) postRefreshUpdate(c types.Context) error {
 	return nil
 }
 
-func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) error {
+func (gui *Gui) activateContext(c types.Context, opts types.OnFocusOpts) error {
 	viewName := c.GetViewName()
 	v, err := gui.g.View(viewName)
 	if err != nil {
@@ -197,7 +191,7 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 	}
 	gui.renderOptionsMap(optionsMap)
 
-	if err := c.HandleFocus(opts...); err != nil {
+	if err := c.HandleFocus(opts); err != nil {
 		return err
 	}
 

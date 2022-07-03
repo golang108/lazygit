@@ -81,7 +81,7 @@ func (self *ListController) isSelectedLineInViewPort() bool {
 func (self *ListController) scrollHorizontal(scrollFunc func()) error {
 	scrollFunc()
 
-	return self.context.HandleFocus()
+	return self.context.HandleFocus(types.OnFocusOpts{})
 }
 
 func (self *ListController) handleLineChange(change int) error {
@@ -96,7 +96,7 @@ func (self *ListController) handleLineChange(change int) error {
 	// doing this check so that if we're holding the up key at the start of the list
 	// we're not constantly re-rendering the main view.
 	if before != after {
-		return self.context.HandleFocus()
+		return self.context.HandleFocus(types.OnFocusOpts{})
 	}
 
 	return nil
@@ -136,7 +136,7 @@ func (self *ListController) HandleClick(opts gocui.ViewMouseBindingOpts) error {
 	if prevSelectedLineIdx == newSelectedLineIdx && alreadyFocused && self.context.GetOnClick() != nil {
 		return self.context.GetOnClick()()
 	}
-	return self.context.HandleFocus()
+	return self.context.HandleFocus(types.OnFocusOpts{})
 }
 
 func (self *ListController) pushContextIfNotFocused() error {
