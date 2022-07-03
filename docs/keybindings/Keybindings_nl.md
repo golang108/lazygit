@@ -164,13 +164,13 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
 
 <pre>
   <kbd>esc</kbd>: sluit lijn-bij-lijn modus
+  <kbd>space</kbd>: voeg toe/verwijder lijn(en) in patch
   <kbd>o</kbd>: open bestand
   <kbd>▲</kbd>: selecteer de vorige lijn
   <kbd>▼</kbd>: selecteer de volgende lijn
   <kbd>◄</kbd>: selecteer de vorige hunk
   <kbd>►</kbd>: selecteer de volgende hunk
   <kbd>ctrl+o</kbd>: copy the selected text to the clipboard
-  <kbd>space</kbd>: voeg toe/verwijder lijn(en) in patch
   <kbd>v</kbd>: toggle drag selecteer
   <kbd>V</kbd>: toggle drag selecteer
   <kbd>a</kbd>: toggle selecteer hunk
@@ -221,17 +221,17 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
   <kbd>space</kbd>: toggle lijnen staged / unstaged
   <kbd>d</kbd>: verwijdert change (git reset)
   <kbd>tab</kbd>: ga naar een ander paneel
+  <kbd>e</kbd>: verander bestand
   <kbd>o</kbd>: open bestand
+  <kbd>E</kbd>: edit hunk
   <kbd>▲</kbd>: selecteer de vorige lijn
   <kbd>▼</kbd>: selecteer de volgende lijn
   <kbd>◄</kbd>: selecteer de vorige hunk
   <kbd>►</kbd>: selecteer de volgende hunk
   <kbd>ctrl+o</kbd>: copy the selected text to the clipboard
-  <kbd>e</kbd>: verander bestand
   <kbd>v</kbd>: toggle drag selecteer
   <kbd>V</kbd>: toggle drag selecteer
   <kbd>a</kbd>: toggle selecteer hunk
-  <kbd>E</kbd>: edit hunk
 </pre>
 
 ## Stash

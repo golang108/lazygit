@@ -100,13 +100,13 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
 
 <pre>
   <kbd>esc</kbd>: wyście z trybu "linia po linii"
+  <kbd>space</kbd>: add/remove line(s) to patch
   <kbd>o</kbd>: otwórz plik
   <kbd>▲</kbd>: poprzednia linia
   <kbd>▼</kbd>: następna linia
   <kbd>◄</kbd>: poprzedni kawałek
   <kbd>►</kbd>: następny kawałek
   <kbd>ctrl+o</kbd>: copy the selected text to the clipboard
-  <kbd>space</kbd>: add/remove line(s) to patch
   <kbd>v</kbd>: toggle drag select
   <kbd>V</kbd>: toggle drag select
   <kbd>a</kbd>: toggle select hunk
@@ -160,17 +160,17 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
   <kbd>space</kbd>: toggle line staged / unstaged
   <kbd>d</kbd>: delete change (git reset)
   <kbd>tab</kbd>: switch to other panel
+  <kbd>e</kbd>: edytuj plik
   <kbd>o</kbd>: otwórz plik
+  <kbd>E</kbd>: edit hunk
   <kbd>▲</kbd>: poprzednia linia
   <kbd>▼</kbd>: następna linia
   <kbd>◄</kbd>: poprzedni kawałek
   <kbd>►</kbd>: następny kawałek
   <kbd>ctrl+o</kbd>: copy the selected text to the clipboard
-  <kbd>e</kbd>: edytuj plik
   <kbd>v</kbd>: toggle drag select
   <kbd>V</kbd>: toggle drag select
   <kbd>a</kbd>: toggle select hunk
-  <kbd>E</kbd>: edit hunk
 </pre>
 
 ## Reflog

@@ -45,6 +45,16 @@ func (gui *Gui) noPopupPanel(f func() error) func() error {
 
 // only to be called from the cheatsheet generate script. This mutates the Gui struct.
 func (self *Gui) GetCheatsheetKeybindings() []*types.Binding {
+	g, err := self.initGocui()
+	if err != nil {
+		panic(err)
+	}
+	self.g = g
+	defer g.Close()
+	if err := self.createAllViews(); err != nil {
+		panic(err)
+	}
+	// need to instantiate views
 	self.helpers = helpers.NewStubHelpers()
 	self.State = &GuiRepoState{}
 	self.State.Contexts = self.contextTree()
@@ -913,13 +923,6 @@ func (self *Gui) GetInitialKeybindings() ([]*types.Binding, []*gocui.ViewMouseBi
 			ViewName: "extras",
 			Key:      gocui.MouseWheelDown,
 			Handler:  self.scrollDownExtra,
-		},
-		{
-			ViewName:    "extras",
-			Key:         opts.GetKey(opts.Config.Universal.ExtrasMenu),
-			Handler:     self.handleCreateExtrasMenuPanel,
-			Description: self.c.Tr.LcOpenExtrasMenu,
-			OpensMenu:   true,
 		},
 		{
 			ViewName: "extras",

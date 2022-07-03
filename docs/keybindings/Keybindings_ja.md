@@ -223,13 +223,13 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
 
 <pre>
   <kbd>esc</kbd>: line-by-lineモードを終了
+  <kbd>space</kbd>: 行をパッチに追加/削除
   <kbd>o</kbd>: ファイルを開く
   <kbd>▲</kbd>: 前の行を選択
   <kbd>▼</kbd>: 次の行を選択
   <kbd>◄</kbd>: 前のhunkを選択
   <kbd>►</kbd>: 次のhunkを選択
   <kbd>ctrl+o</kbd>: 選択されたテキストをクリップボードにコピー
-  <kbd>space</kbd>: 行をパッチに追加/削除
   <kbd>v</kbd>: 範囲選択を切り替え
   <kbd>V</kbd>: 範囲選択を切り替え
   <kbd>a</kbd>: hunk選択を切り替え
@@ -242,17 +242,17 @@ _This file is auto-generated. To update, make the changes in the pkg/i18n direct
   <kbd>space</kbd>: 選択行をステージ/アンステージ
   <kbd>d</kbd>: 変更を削除 (git reset)
   <kbd>tab</kbd>: パネルを切り替え
+  <kbd>e</kbd>: ファイルを編集
   <kbd>o</kbd>: ファイルを開く
+  <kbd>E</kbd>: edit hunk
   <kbd>▲</kbd>: 前の行を選択
   <kbd>▼</kbd>: 次の行を選択
   <kbd>◄</kbd>: 前のhunkを選択
   <kbd>►</kbd>: 次のhunkを選択
   <kbd>ctrl+o</kbd>: 選択されたテキストをクリップボードにコピー
-  <kbd>e</kbd>: ファイルを編集
   <kbd>v</kbd>: 範囲選択を切り替え
   <kbd>V</kbd>: 範囲選択を切り替え
   <kbd>a</kbd>: hunk選択を切り替え
-  <kbd>E</kbd>: edit hunk
 </pre>
 
 ## リモート
