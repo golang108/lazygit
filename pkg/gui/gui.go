@@ -175,7 +175,6 @@ type GuiRepoState struct {
 	Ptmx              *os.File
 	StartupStage      StartupStage // Allows us to not load everything at once
 
-	MainContext    types.ContextKey // used to keep the main and secondary views' contexts in sync
 	ContextManager ContextManager
 	Contexts       *context.ContextTree
 

@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"github.com/go-errors/errors"
 	"github.com/jesseduffield/lazygit/pkg/commands/patch"
 	"github.com/jesseduffield/lazygit/pkg/gui/lbl"
 )
@@ -213,7 +212,7 @@ func (gui *Gui) handleOpenFileAtLine() error {
 	return gui.withLBLActiveCheck(func(state *LblPanelState) error {
 		// again, would be good to use inheritance here (or maybe even composition)
 		var filename string
-		switch gui.State.MainContext {
+		switch gui.currentContext().GetKey() {
 		case gui.State.Contexts.PatchBuilding.GetKey():
 			filename = gui.getSelectedCommitFileName()
 		case gui.State.Contexts.Staging.GetKey():
@@ -223,7 +222,6 @@ func (gui *Gui) handleOpenFileAtLine() error {
 			}
 			filename = file.Name
 		default:
-			return errors.Errorf("unknown main context: %s", gui.State.MainContext)
 		}
 
 		// need to look at current index, then work out what my hunk's header information is, and see how far my line is away from the hunk header

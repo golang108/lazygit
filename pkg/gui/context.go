@@ -176,12 +176,6 @@ func (gui *Gui) activateContext(c types.Context, opts ...types.OnFocusOpts) erro
 
 	gui.setWindowContext(c)
 
-	if viewName == "main" {
-		gui.changeMainViewsContext(c)
-	} else {
-		gui.changeMainViewsContext(gui.State.Contexts.Normal)
-	}
-
 	gui.moveToTopOfWindow(c)
 	if _, err := gui.g.SetCurrentView(viewName); err != nil {
 		return err
@@ -344,18 +338,6 @@ func (gui *Gui) TransientContexts() []types.Context {
 	return slices.Filter(gui.State.Contexts.Flatten(), func(context types.Context) bool {
 		return context.IsTransient()
 	})
-}
-
-// changeContext is a helper function for when we want to change a 'main' context
-// which currently just means a context that affects both the main and secondary views
-// other views can have their context changed directly but this function helps
-// keep the main and secondary views in sync
-func (gui *Gui) changeMainViewsContext(c types.Context) {
-	if gui.State.MainContext == c.GetKey() {
-		return
-	}
-
-	gui.State.MainContext = c.GetKey()
 }
 
 func (gui *Gui) rerenderView(view *gocui.View) error {

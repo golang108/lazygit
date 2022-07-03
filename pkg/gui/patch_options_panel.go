@@ -90,7 +90,7 @@ func (gui *Gui) validateNormalWorkingTreeState() (bool, error) {
 }
 
 func (gui *Gui) returnFocusFromLineByLinePanelIfNecessary() error {
-	if gui.State.MainContext == context.PATCH_BUILDING_MAIN_CONTEXT_KEY {
+	if gui.currentContext().GetKey() == gui.State.Contexts.PatchBuilding.GetKey() {
 		return gui.handleEscapePatchBuildingPanel()
 	}
 	return nil
