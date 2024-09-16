@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"path/filepath"
 	"strings"
 
 	"github.com/jesseduffield/gocui"
@@ -131,6 +132,12 @@ func (self *CommitFilesController) GetKeybindings(opts types.KeybindingsOpts) []
 func (self *CommitFilesController) GetMouseKeybindings(opts types.KeybindingsOpts) []*gocui.ViewMouseBinding {
 	return []*gocui.ViewMouseBinding{
 		{
+			ViewName:    "main",
+			Key:         gocui.MouseLeft,
+			Handler:     self.onClickMain,
+			FocusedView: self.context().GetViewName(),
+		},
+		{
 			ViewName:    "patchBuilding",
 			Key:         gocui.MouseLeft,
 			Handler:     self.onClickMain,
@@ -178,7 +185,30 @@ func (self *CommitFilesController) onClickMain(opts gocui.ViewMouseBindingOpts) 
 	if node == nil {
 		return nil
 	}
-	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "main", ClickedViewLineIdx: opts.Y})
+
+	clickedFile, line, ok := self.c.Helpers().Staging.GetFileAndLineForClickedDiffLine("main", opts.Y)
+	if !ok {
+		line = -1
+	}
+
+	if !node.IsFile() && ok {
+		relativePath, err := filepath.Rel(self.c.Git().RepoPaths.RepoPath(), clickedFile)
+		if err != nil {
+			return err
+		}
+		self.context().CommitFileTreeViewModel.ExpandToPath(relativePath)
+		self.c.PostRefreshUpdate(self.context())
+
+		idx, ok := self.context().CommitFileTreeViewModel.GetIndexForPath(relativePath)
+		if ok {
+			self.context().SetSelectedLineIdx(idx)
+			self.context().GetViewTrait().FocusPoint(
+				self.context().ModelIndexToViewIndex(idx))
+			node = self.context().GetSelected()
+		}
+	}
+
+	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "main", ClickedViewLineIdx: opts.Y, ClickedViewRealLineIdx: line})
 }
 
 func (self *CommitFilesController) checkout(node *filetree.CommitFileNode) error {
@@ -363,7 +393,7 @@ func (self *CommitFilesController) currentFromToReverseForPatchBuilding() (strin
 }
 
 func (self *CommitFilesController) enter(node *filetree.CommitFileNode) error {
-	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "", ClickedViewLineIdx: -1})
+	return self.enterCommitFile(node, types.OnFocusOpts{ClickedWindowName: "", ClickedViewLineIdx: -1, ClickedViewRealLineIdx: -1})
 }
 
 func (self *CommitFilesController) enterCommitFile(node *filetree.CommitFileNode, opts types.OnFocusOpts) error {
