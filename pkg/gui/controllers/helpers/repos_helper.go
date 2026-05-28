@@ -10,6 +10,7 @@ import (
 
 	appTypes "github.com/jesseduffield/lazygit/pkg/app/types"
 	"github.com/jesseduffield/lazygit/pkg/commands"
+	"github.com/jesseduffield/lazygit/pkg/commands/direnv"
 	"github.com/jesseduffield/lazygit/pkg/commands/models"
 	"github.com/jesseduffield/lazygit/pkg/env"
 	"github.com/jesseduffield/lazygit/pkg/gocui"
@@ -168,6 +169,14 @@ func (self *ReposHelper) DispatchSwitchTo(path string, errMsg string, contextKey
 			}
 
 			return err
+		}
+
+		msg, derr := direnv.Load(self.c.OS().Cmd)
+		if msg != "" {
+			self.c.LogCommand(msg, false)
+		}
+		if derr != nil {
+			self.c.Log.WithError(derr).Warn("direnv load failed")
 		}
 
 		if err := self.recordDirectoryHelper.RecordCurrentDirectory(); err != nil {
